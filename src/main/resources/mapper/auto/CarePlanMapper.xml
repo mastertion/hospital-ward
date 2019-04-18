@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospitalward.mapper.auto.CarePlanMapper">
+  <resultMap id="BaseResultMap" type="com.example.hospitalward.model.CarePlan">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="care_id" jdbcType="BIGINT" property="careId" />
+    <result column="patient_id" jdbcType="BIGINT" property="patientId" />
+    <result column="medicinal_id" jdbcType="BIGINT" property="medicinalId" />
+    <result column="medicinal_num" jdbcType="INTEGER" property="medicinalNum" />
+    <result column="is_complete" jdbcType="BIT" property="isComplete" />
+    <result column="care_plan" jdbcType="VARCHAR" property="carePlan" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, care_id, patient_id, medicinal_id, medicinal_num, is_complete, care_plan, remarks, 
+    is_deleted, create_date, update_date, create_staff
+  </sql>
+  <select id="selectByExample" parameterType="com.example.hospitalward.model.CarePlanExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from care_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from care_plan
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from care_plan
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.hospitalward.model.CarePlanExample">
+    delete from care_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.example.hospitalward.model.CarePlan">
+    insert into care_plan (id, care_id, patient_id, 
+      medicinal_id, medicinal_num, is_complete, 
+      care_plan, remarks, is_deleted, 
+      create_date, update_date, create_staff
+      )
+    values (#{id,jdbcType=BIGINT}, #{careId,jdbcType=BIGINT}, #{patientId,jdbcType=BIGINT}, 
+      #{medicinalId,jdbcType=BIGINT}, #{medicinalNum,jdbcType=INTEGER}, #{isComplete,jdbcType=BIT}, 
+      #{carePlan,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{createStaff,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.hospitalward.model.CarePlan">
+    insert into care_plan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="careId != null">
+        care_id,
+      </if>
+      <if test="patientId != null">
+        patient_id,
+      </if>
+      <if test="medicinalId != null">
+        medicinal_id,
+      </if>
+      <if test="medicinalNum != null">
+        medicinal_num,
+      </if>
+      <if test="isComplete != null">
+        is_complete,
+      </if>
+      <if test="carePlan != null">
+        care_plan,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="createStaff != null">
+        create_staff,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="careId != null">
+        #{careId,jdbcType=BIGINT},
+      </if>
+      <if test="patientId != null">
+        #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="medicinalId != null">
+        #{medicinalId,jdbcType=BIGINT},
+      </if>
+      <if test="medicinalNum != null">
+        #{medicinalNum,jdbcType=INTEGER},
+      </if>
+      <if test="isComplete != null">
+        #{isComplete,jdbcType=BIT},
+      </if>
+      <if test="carePlan != null">
+        #{carePlan,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        #{createStaff,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.hospitalward.model.CarePlanExample" resultType="java.lang.Long">
+    select count(*) from care_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update care_plan
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.careId != null">
+        care_id = #{record.careId,jdbcType=BIGINT},
+      </if>
+      <if test="record.patientId != null">
+        patient_id = #{record.patientId,jdbcType=BIGINT},
+      </if>
+      <if test="record.medicinalId != null">
+        medicinal_id = #{record.medicinalId,jdbcType=BIGINT},
+      </if>
+      <if test="record.medicinalNum != null">
+        medicinal_num = #{record.medicinalNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.isComplete != null">
+        is_complete = #{record.isComplete,jdbcType=BIT},
+      </if>
+      <if test="record.carePlan != null">
+        care_plan = #{record.carePlan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remarks != null">
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=BIT},
+      </if>
+      <if test="record.createDate != null">
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateDate != null">
+        update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createStaff != null">
+        create_staff = #{record.createStaff,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update care_plan
+    set id = #{record.id,jdbcType=BIGINT},
+      care_id = #{record.careId,jdbcType=BIGINT},
+      patient_id = #{record.patientId,jdbcType=BIGINT},
+      medicinal_id = #{record.medicinalId,jdbcType=BIGINT},
+      medicinal_num = #{record.medicinalNum,jdbcType=INTEGER},
+      is_complete = #{record.isComplete,jdbcType=BIT},
+      care_plan = #{record.carePlan,jdbcType=VARCHAR},
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      is_deleted = #{record.isDeleted,jdbcType=BIT},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      create_staff = #{record.createStaff,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.hospitalward.model.CarePlan">
+    update care_plan
+    <set>
+      <if test="careId != null">
+        care_id = #{careId,jdbcType=BIGINT},
+      </if>
+      <if test="patientId != null">
+        patient_id = #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="medicinalId != null">
+        medicinal_id = #{medicinalId,jdbcType=BIGINT},
+      </if>
+      <if test="medicinalNum != null">
+        medicinal_num = #{medicinalNum,jdbcType=INTEGER},
+      </if>
+      <if test="isComplete != null">
+        is_complete = #{isComplete,jdbcType=BIT},
+      </if>
+      <if test="carePlan != null">
+        care_plan = #{carePlan,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        create_staff = #{createStaff,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.hospitalward.model.CarePlan">
+    update care_plan
+    set care_id = #{careId,jdbcType=BIGINT},
+      patient_id = #{patientId,jdbcType=BIGINT},
+      medicinal_id = #{medicinalId,jdbcType=BIGINT},
+      medicinal_num = #{medicinalNum,jdbcType=INTEGER},
+      is_complete = #{isComplete,jdbcType=BIT},
+      care_plan = #{carePlan,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=BIT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      create_staff = #{createStaff,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

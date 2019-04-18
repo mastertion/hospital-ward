@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 数据表格</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/asset/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/asset/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/asset/css/animate.css" rel="stylesheet">
+    <link href="/asset/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/element-ui/2.5.4/theme-chalk/index.css" rel="stylesheet">
+    <link href="/asset/css/reset.css" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight page-content" id="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="">
+                        <a @click="addPatientDialog();" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                    </div>
+                    <el-table
+                            :data="patientList"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                prop="id"
+                                label="用户编号"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="用户姓名">
+                        </el-table-column>
+                        <el-table-column
+                                prop="sex"
+                                label="性别">
+                        </el-table-column>
+                        <el-table-column
+                                prop="cardId"
+                                label="身份证号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="national"
+                                label="民族">
+                        </el-table-column>
+                        <el-table-column
+                                prop="education"
+                                label="学历">
+                        </el-table-column>
+                        <el-table-column
+                                prop="address"
+                                label="家庭住址">
+                        </el-table-column>
+                        <el-table-column
+                                prop="roomNum"
+                                label="房间号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="bedNum"
+                                label="床号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="rname"
+                                label="亲属姓名">
+                        </el-table-column>
+                        <el-table-column
+                                prop="rphone"
+                                label="亲属电话">
+                        </el-table-column>
+                        <el-table-column
+                                label="操作"
+                                width="160">
+                            <template slot-scope="scope">
+                                <el-button
+                                        @click="editPatientDialog(scope)"
+                                        size="mini"
+                                >编辑
+                                </el-button>
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                >删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="1"
+                            :page-sizes="[5, 10, 20, 40]"
+                            :page-size="patientInfo.pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="patientInfo.total">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+        <el-dialog
+                :title="title"
+                :modal-append-to-body="false"
+                :visible.sync="dialogVisible"
+                width="80%"
+                :before-close="handleClose">
+            <el-form ref="form" :model="form" label-width="120px">
+                <el-row :gutter="20" type="flex">
+                    <el-col :offset="9" :span="6">
+                <el-upload
+                        class="avatar-uploader"
+                        action="https://api.yum6.cn/sinaimg.php/sinaimg.php?type=multipart"
+                        name="file"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                    <img v-if="form.photo" :src="form.photo" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <el-form-item label="姓名：">
+                            <el-input v-model="form.name"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="性别：">
+                            <el-radio-group v-model="form.sex">
+                                <el-radio :label="0">女</el-radio>
+                                <el-radio :label="1">男</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="民族：">
+                            <el-select v-model="form.national" placeholder="请选择民族">
+                                <el-option
+                                        v-for="item in nationals"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <el-form-item label="身份证号：">
+                            <el-input v-model="form.cardId"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="学历：">
+                            <el-select v-model="form.education" placeholder="请选择学历">
+                                <el-option
+                                        v-for="item in educations"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="家庭住址：">
+                            <el-input v-model="form.address"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <el-form-item label="前台办理人员：">
+                            <el-select v-model="form.staffId" placeholder="请选择员工">
+                                <el-option
+                                        v-for="item in staffList"
+                                        :key="item.id"
+                                        :label="item.userName"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="亲属姓名：">
+                            <el-input v-model="form.rname"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="亲属性别：">
+                            <el-radio-group v-model="form.rsex">
+                                <el-radio :label="0">女</el-radio>
+                                <el-radio :label="1">男</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <el-form-item label="亲属联系方式：">
+                            <el-input v-model="form.rphone"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="亲属家庭住址：">
+                            <el-input v-model="form.raddress"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="亲属身份证号：">
+                            <el-input v-model="form.rcardId"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <el-form-item label="亲属工作单位：">
+                            <el-input v-model="form.rwork"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="与老人关系：">
+                            <el-input v-model="form.relation"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">取 消</el-button>
+                <el-button type="primary" @click="handleConfirm">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="/asset/js/jquery.min.js?v=2.1.4"></script>
+<script src="/asset/js/bootstrap.min.js?v=3.3.6"></script>
+
+
+<script src="/asset/js/plugins/jeditable/jquery.jeditable.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    $(function () {
+        vm.find()
+    })
+    var vm = new Vue({
+        el: "#content",
+        data: function () {
+            return {
+                nationals: [
+                    {id:'1' ,name:'汉族'},
+                    {id:'2' ,name:'蒙古族'},
+                    {id:'3' ,name:'回族'},
+                    {id:'4' ,name:'藏族'},
+                    {id:'5' ,name:'维吾尔族'},
+                    {id:'6' ,name:'苗族'},
+                    {id:'7' ,name:'彝族'},
+                    {id:'8' ,name:'壮族'},
+                    {id:'9' ,name:'布依族'},
+                    {id:'10',name:'朝鲜族'},
+                    {id:'11',name:'满族'},
+                    {id:'12',name:'侗族'},
+                    {id:'13',name:'瑶族'},
+                    {id:'14',name:'白族'},
+                    {id:'15',name:'土家族'},
+                    {id:'16',name:'哈尼族'},
+                    {id:'17',name:'哈萨克族'},
+                    {id:'18',name:'傣族'},
+                    {id:'19',name:'黎族'},
+                    {id:'20',name:'傈僳族'},
+                    {id:'21',name:'佤族'},
+                    {id:'22',name:'畲族'},
+                    {id:'23',name:'高山族'},
+                    {id:'24',name:'拉祜族'},
+                    {id:'25',name:'水族'},
+                    {id:'26',name:'东乡族'},
+                    {id:'27',name:'纳西族'},
+                    {id:'28',name:'景颇族'},
+                    {id:'29',name:'柯尔克孜族'},
+                    {id:'30',name:'土族'},
+                    {id:'31',name:'达翰尔族'},
+                    {id:'32',name:'么佬族'},
+                    {id:'33',name:'羌族'},
+                    {id:'34',name:'布朗族'},
+                    {id:'35',name:'撒拉族'},
+                    {id:'36',name:'毛南族'},
+                    {id:'37',name:'仡佬族'},
+                    {id:'38',name:'锡伯族'},
+                    {id:'39',name:'阿昌族'},
+                    {id:'40',name:'普米族'},
+                    {id:'41',name:'塔吉克族'},
+                    {id:'42',name:'怒族'},
+                    {id:'43',name:'乌孜别克族'},
+                    {id:'44',name:'俄罗斯族'},
+                    {id:'45',name:'鄂温克族'},
+                    {id:'46',name:'德昂族'},
+                    {id:'47',name:'保安族'},
+                    {id:'48',name:'裕固族'},
+                    {id:'49',name:'京族'},
+                    {id:'50',name:'塔塔尔族'},
+                    {id:'51',name:'独龙族'},
+                    {id:'52',name:'鄂伦春族'},
+                    {id:'53',name:'赫哲族'},
+                    {id:'54',name:'门巴族'},
+                    {id:'55',name:'珞巴族'},
+                    {id:'56',name:'基诺族'}
+                ],
+                educations: [{
+                    value: '白丁',
+                    label: '白丁'
+                }, {
+                    value: '小学',
+                    label: '小学'
+                }, {
+                    value: '初中',
+                    label: '初中'
+                }, {
+                    value: '高中',
+                    label: '高中'
+                }, {
+                    value: '本科',
+                    label: '本科'
+                }, {
+                    value: '研究生',
+                    label: '研究生'
+                }, {
+                    value: '硕士',
+                    label: '硕士'
+                } , {
+                    value: '博士',
+                    label: '博士'
+                } ],
+                patientList: [],
+                patientInfo: {
+                    pageSize: 5,
+                    pageNum: 1
+                },
+                title: '',
+                form: {
+                    sex: 1,
+                    rsex: 1,
+                    photo: ''
+                },
+                dialogVisible: false,
+                staffList: [],
+            }
+        },
+        methods: {
+            editPatientDialog(data) {
+                vm.title = '编辑'
+                vm.dialogVisible = true
+                vm.form = data.row
+            },
+            addPatientDialog() {
+                vm.dialogVisible = true
+                vm.title = '录入用户信息'
+            },
+            handleConfirm() {
+                vm.dialogVisible = true
+                let method = 'post'
+                if (vm.form.id) {
+                    method = 'put'
+                }
+                $.ajax({
+                    url: "/customer/patient",
+                    type: method,//请求方式
+                    data: vm.form,//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.find()
+                            vm.handleClose()
+                        }
+                    },
+                })
+            },
+            handleClose() {
+                vm.form = {
+                    sex: 1,
+                    rsex: 1,
+                    photo: ''
+                }
+                vm.dialogVisible = false
+            },
+            getStaff: function () {
+                $.ajax({
+                    url: "/customer/staff",
+                    type: "get",//请求方式
+                    data: {"position": 1},//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.staffList = response.data.list
+                        }
+                    },
+                })
+
+            },
+            find: function () {
+                $.ajax({
+                    url: "/customer/patient",
+                    type: "get",//请求方式
+                    data: vm.patientInfo,//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.patientList = response.data.list
+                            vm.patientInfo = response.data
+                        }
+                    },
+                })
+
+            },
+            handleSizeChange: function (val) {
+                vm.patientInfo.pageSize = val
+                vm.find()
+            },
+            handleCurrentChange: function (val) {
+                vm.patientInfo.pageNum = val
+                vm.find()
+            },
+            handleAvatarSuccess(res, file) {
+                if (file.response.code === '200') {
+                    // this.form.photo = URL.createObjectURL(file.response);
+                    this.form.photo = file.response.url;
+                } else {
+                    this.$message.error("上传失败");
+                }
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            }
+        },
+        created: function () {
+            this.getStaff()
+        },
+        mounted: function () {
+        }
+
+    })
+</script>
+<!--统计代码，可删除-->
+
+</body>
+<style>
+
+</style>
+</html>

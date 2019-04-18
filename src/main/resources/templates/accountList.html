@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 数据表格</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/asset/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/asset/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/asset/css/animate.css" rel="stylesheet">
+    <link href="/asset/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/element-ui/2.5.4/theme-chalk/index.css" rel="stylesheet">
+    <link href="/asset/css/reset.css" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight page-content" id="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="">
+                        <a @click="addAccountDialog();" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                    </div>
+                    <el-table
+                            :data="accountList"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                prop="patientName"
+                                label="姓名"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="deposit"
+                                label="押金">
+                        </el-table-column>
+                        <el-table-column
+                                prop="payer"
+                                label="缴费人">
+                        </el-table-column>
+                        <el-table-column
+                                prop="updateDate"
+                                label="上次缴费时间">
+                        </el-table-column>
+                        <el-table-column
+                                prop="dailyConsumption"
+                                label="日常消费">
+                        </el-table-column>
+                        <el-table-column
+                                prop="medicinesConsumption"
+                                label="药品消费">
+                        </el-table-column>
+                        <el-table-column
+                                prop="operation"
+                                label="操作">
+                            <template slot-scope="scope">
+                                <el-button @click="editAccountDialog(scope)"
+                                           size="mini"
+                                >编辑
+                                </el-button>
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                >删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="1"
+                            :page-sizes="[5, 10, 20, 40]"
+                            :page-size="accountInfo.pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="accountInfo.total">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+        <el-dialog
+                :title="title"
+                :modal-append-to-body="false"
+                :visible.sync="dialogVisible"
+                width="80%"
+                :before-close="handleClose">
+            <el-form ref="form" :model="form" label-width="120px">
+                <el-form-item label="姓名：">
+                    <span v-if="form.id" v-text="form.patientName + '（' + form.cardId + ')'"></span>
+
+                    <el-select v-else v-model="form.patientId" placeholder="请选择用户">
+                        <el-option
+                                v-for="item in patientList"
+                                :key="item.id"
+                                :label="item.name+ '(' + item.cardId + ')'"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="押金：">
+                    <span v-if="form.id" v-text="form.deposit"></span>
+
+                    <el-input v-else v-model="form.deposit"></el-input>
+                </el-form-item>
+                <el-form-item label="缴费人：">
+                    <span v-if="form.id" v-text="form.deposit"></span>
+                    <el-input v-else v-model="form.payer"></el-input>
+                </el-form-item>
+                <el-form-item label="前台办理人员：">
+                    <span v-if="form.id" v-text="form.staffName"></span>
+
+                    <el-select v-else v-model="form.createStaff" placeholder="请选择员工">
+                        <el-option
+                                v-for="item in staffList"
+                                :key="item.id"
+                                :label="item.userName"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <template v-if="form.id">
+                    <el-form-item label="日常消费：">
+                        <span v-text="form.dailyConsumption"></span>
+                    </el-form-item>
+                    <el-form-item label="药品消费：">
+                        <span v-text="form.medicinesConsumption"></span>
+                    </el-form-item>
+                    <el-form-item label="补交人：">
+                        <el-input v-model="form.payment"></el-input>
+                    </el-form-item>
+                    <el-form-item label="补交金额：">
+                        <el-input v-model="form.complement"></el-input>
+                    </el-form-item>
+                </template>
+
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">取 消</el-button>
+                <el-button type="primary" @click="handleConfirm">确 定</el-button>
+            </span>
+        </el-dialog>
+
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="/asset/js/jquery.min.js?v=2.1.4"></script>
+<script src="/asset/js/bootstrap.min.js?v=3.3.6"></script>
+
+<script src="/asset/js/plugins/jeditable/jquery.jeditable.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    $(function () {
+        vm.find()
+    })
+    var vm = new Vue({
+        el: "#content",
+        data: function () {
+            return {
+                accountList: [],
+                accountInfo: {
+                    pageSize: 5,
+                    pageNum: 1
+                },
+                title: '',
+                form: {
+                },
+                patientList: [],
+                dialogVisible: false,
+                staffList: [],
+            }
+        },
+        methods: {
+            editAccountDialog(data) {
+                vm.title = '编辑'
+                vm.dialogVisible = true
+                vm.form = data.row
+                vm.form.payment = ''
+                vm.form.complement = ''
+
+            },
+            addAccountDialog() {
+                vm.dialogVisible = true
+                vm.title = '添加药品'
+            },
+            handleConfirm() {
+                vm.dialogVisible = true
+                let method = 'post'
+                if (vm.form.id) {
+                    method = 'put'
+                }
+                $.ajax({
+                    url: "/user/account",
+                    type: method,//请求方式
+                    data: vm.form,//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.find()
+                            vm.handleClose()
+                        }
+                    },
+                })
+            },
+            handleClose() {
+                vm.form = {
+                    sex: 1
+                }
+                vm.dialogVisible = false
+            },
+            getStaff: function () {
+                $.ajax({
+                    url: "/customer/staff",
+                    type: "get",//请求方式
+                    data: {"position": 1},//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.staffList = response.data.list
+                        }
+                    },
+                })
+
+            },
+            getPatient: function () {
+                $.ajax({
+                    url: "/customer/patient_not_account",
+                    type: "get",//请求方式
+                    data: {"position": 1},//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.patientList = response.data
+                        }
+                    },
+                })
+
+            },
+            find: function () {
+                $.ajax({
+                    url: "/user/account",
+                    type: "get",//请求方式
+                    data: vm.accountInfo,//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.accountList = response.data.list
+                            vm.accountInfo = response.data
+                        }
+                    },
+                })
+
+            },
+            handleSizeChange: function (val) {
+                vm.accountInfo.pageSize = val
+                vm.find()
+            },
+            handleCurrentChange: function (val) {
+                vm.accountInfo.pageNum = val
+                vm.find()
+            }
+        },
+        created: function () {
+            this.getPatient()
+            this.getStaff()
+        },
+        mounted: function () {
+        }
+
+    })
+</script>
+<!--统计代码，可删除-->
+
+</body>
+
+</html>

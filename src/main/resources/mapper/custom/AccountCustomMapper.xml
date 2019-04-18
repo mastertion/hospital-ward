@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospitalward.mapper.custom.AccountCustomerMapper">
+  <resultMap id="BaseResultMap" type="com.example.hospitalward.vo.AccountVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="deposit" jdbcType="DECIMAL" property="deposit" />
+    <result column="payer" jdbcType="VARCHAR" property="payer" />
+    <result column="pay_date" jdbcType="DATE" property="payDate" />
+    <result column="daily_consumption" jdbcType="DECIMAL" property="dailyConsumption" />
+    <result column="medicines_consumption" jdbcType="DECIMAL" property="medicinesConsumption" />
+    <result column="payment" jdbcType="VARCHAR" property="payment" />
+    <result column="complement" jdbcType="DECIMAL" property="complement" />
+    <result column="complement_date" jdbcType="DATE" property="complementDate" />
+    <result column="patient_id" jdbcType="BIGINT" property="patientId" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="patient_name" jdbcType="VARCHAR" property="patientName" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+  </resultMap>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select a.id, a.deposit, a.payer, a.pay_date, a.daily_consumption, a.medicines_consumption, a.payment,
+    a.complement, a.complement_date, a.patient_id, a.is_deleted, a.create_date, a.update_date, a.create_staff,
+    s.name staff_name, p.card_id, p.name patient_name from account a, patient p, staff s
+    <where>
+      a.patient_id = p.id and   a.is_deleted = false and
+      p.is_deleted = false  and a.create_staff = s.id
+       <if test="patient.name != null">
+         and p.name like  #{patient.name,jdbcType=VARCHAR}
+       </if>
+       <if test="page.clause != null" >
+         order by   #{page.clause}
+       </if>
+       <if test="page.clause == null" >
+         order by   update_date DESC
+       </if>
+     </where>
+  </select>
+
+  <select id="selecByPatientId" resultMap="BaseResultMap">
+    select
+      a.id,
+      IFNULL( a.deposit, 0 ),
+      a.payer,
+      a.pay_date,
+      IFNULL( a.daily_consumption, 0 ),
+      IFNULL( a.medicines_consumption, NULL ),
+      a.payment,
+      a.complement,
+      a.complement_date,
+      a.patient_id,
+      a.is_deleted,
+      a.create_date,
+      a.update_date,
+      a.create_staff,
+      s.NAME staff_name,
+      p.card_id,
+      p.NAME patient_name
+    from
+      account a, patient p, staff s
+    <where>
+      a.patient_id = p.id and a.patient_id =  #{patientId,jdbcType=BIGINT}  and   a.is_deleted = false and
+      p.is_deleted = false  and a.create_staff = s.id
+      and isNull( a.id )
+
+    </where>
+  </select>
+</mapper>

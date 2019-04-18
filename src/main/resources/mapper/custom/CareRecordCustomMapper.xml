@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospitalward.mapper.custom.CareRecordCustomMapper">
+  <resultMap id="ResultMap" type="com.example.hospitalward.vo.CareRecordVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="patient_id" jdbcType="BIGINT" property="patientId" />
+    <result column="staff_id" jdbcType="BIGINT" property="staffId" />
+    <result column="care_info" jdbcType="VARCHAR" property="careInfo" />
+    <result column="care_date" jdbcType="TIMESTAMP" property="careDate" />
+    <result column="care_type" jdbcType="INTEGER" property="careType" />
+    <result column="is_complete" jdbcType="BIT" property="isComplete" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+    <result column="care_info" jdbcType="LONGVARCHAR" property="careInfo" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="patient_name" jdbcType="VARCHAR" property="patientName" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+  </resultMap>
+  <sql id="Column_List">
+    cr.id, cr.patient_id, cr.staff_id, cr.care_date, cr.care_info, cr.care_type, cr.is_deleted, cr.create_date, cr.update_date,
+    cr.create_staff, s.user_name staff_name, p.name patient_name, p.card_id card_id
+  </sql>
+  <select id="selectList" parameterType="com.example.hospitalward.vo.CareRecordVO" resultMap="ResultMap">
+    select
+    <include refid="Column_List" />
+    from care_record cr, staff s, patient p
+    <where>
+      and cr.is_deleted = false  AND cr.is_complete = FALSE
+      and cr.staff_id = s.id   and cr.patient_id = p.id
+      <if test="careRecord.staffName != null">
+        and s.user_name like  #{careRecord.staffName,jdbcType=VARCHAR}
+      </if>
+      <if test="careRecord.patientName != null">
+        and p.name like  #{careRecord.patientName,jdbcType=VARCHAR}
+      </if>
+      <if test="careRecord.patientName != null">
+        and p.card_id =  #{careRecord.cardId,jdbcType=VARCHAR}
+      </if>
+      <if test="page.clause != null" >
+        order by   #{page.clause}
+      </if>
+      <if test="page.clause == null" >
+        order by   update_date DESC
+      </if>
+    </where>
+  </select>
+</mapper>

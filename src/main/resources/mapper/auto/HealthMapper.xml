@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospitalward.mapper.auto.HealthMapper">
+  <resultMap id="BaseResultMap" type="com.example.hospitalward.model.Health">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cando" jdbcType="VARCHAR" property="cando" />
+    <result column="mental" jdbcType="VARCHAR" property="mental" />
+    <result column="pulse" jdbcType="VARCHAR" property="pulse" />
+    <result column="blood_pressure" jdbcType="VARCHAR" property="bloodPressure" />
+    <result column="allergic_medicines" jdbcType="VARCHAR" property="allergicMedicines" />
+    <result column="disease" jdbcType="VARCHAR" property="disease" />
+    <result column="food" jdbcType="VARCHAR" property="food" />
+    <result column="charact" jdbcType="VARCHAR" property="charact" />
+    <result column="hobby" jdbcType="VARCHAR" property="hobby" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="patient_id" jdbcType="BIGINT" property="patientId" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, cando, mental, pulse, blood_pressure, allergic_medicines, disease, food, charact, 
+    hobby, remarks, patient_id, is_deleted, create_date, update_date, create_staff
+  </sql>
+  <select id="selectByExample" parameterType="com.example.hospitalward.model.HealthExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from health
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from health
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from health
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.example.hospitalward.model.HealthExample">
+    delete from health
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.example.hospitalward.model.Health">
+    insert into health (id, cando, mental, 
+      pulse, blood_pressure, allergic_medicines, 
+      disease, food, charact, 
+      hobby, remarks, patient_id, 
+      is_deleted, create_date, update_date, 
+      create_staff)
+    values (#{id,jdbcType=BIGINT}, #{cando,jdbcType=VARCHAR}, #{mental,jdbcType=VARCHAR}, 
+      #{pulse,jdbcType=VARCHAR}, #{bloodPressure,jdbcType=VARCHAR}, #{allergicMedicines,jdbcType=VARCHAR}, 
+      #{disease,jdbcType=VARCHAR}, #{food,jdbcType=VARCHAR}, #{charact,jdbcType=VARCHAR}, 
+      #{hobby,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{patientId,jdbcType=BIGINT}, 
+      #{isDeleted,jdbcType=BIT}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{createStaff,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.hospitalward.model.Health">
+    insert into health
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="cando != null">
+        cando,
+      </if>
+      <if test="mental != null">
+        mental,
+      </if>
+      <if test="pulse != null">
+        pulse,
+      </if>
+      <if test="bloodPressure != null">
+        blood_pressure,
+      </if>
+      <if test="allergicMedicines != null">
+        allergic_medicines,
+      </if>
+      <if test="disease != null">
+        disease,
+      </if>
+      <if test="food != null">
+        food,
+      </if>
+      <if test="charact != null">
+        charact,
+      </if>
+      <if test="hobby != null">
+        hobby,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="patientId != null">
+        patient_id,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="createStaff != null">
+        create_staff,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="cando != null">
+        #{cando,jdbcType=VARCHAR},
+      </if>
+      <if test="mental != null">
+        #{mental,jdbcType=VARCHAR},
+      </if>
+      <if test="pulse != null">
+        #{pulse,jdbcType=VARCHAR},
+      </if>
+      <if test="bloodPressure != null">
+        #{bloodPressure,jdbcType=VARCHAR},
+      </if>
+      <if test="allergicMedicines != null">
+        #{allergicMedicines,jdbcType=VARCHAR},
+      </if>
+      <if test="disease != null">
+        #{disease,jdbcType=VARCHAR},
+      </if>
+      <if test="food != null">
+        #{food,jdbcType=VARCHAR},
+      </if>
+      <if test="charact != null">
+        #{charact,jdbcType=VARCHAR},
+      </if>
+      <if test="hobby != null">
+        #{hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="patientId != null">
+        #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        #{createStaff,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.example.hospitalward.model.HealthExample" resultType="java.lang.Long">
+    select count(*) from health
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update health
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.cando != null">
+        cando = #{record.cando,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mental != null">
+        mental = #{record.mental,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pulse != null">
+        pulse = #{record.pulse,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bloodPressure != null">
+        blood_pressure = #{record.bloodPressure,jdbcType=VARCHAR},
+      </if>
+      <if test="record.allergicMedicines != null">
+        allergic_medicines = #{record.allergicMedicines,jdbcType=VARCHAR},
+      </if>
+      <if test="record.disease != null">
+        disease = #{record.disease,jdbcType=VARCHAR},
+      </if>
+      <if test="record.food != null">
+        food = #{record.food,jdbcType=VARCHAR},
+      </if>
+      <if test="record.charact != null">
+        charact = #{record.charact,jdbcType=VARCHAR},
+      </if>
+      <if test="record.hobby != null">
+        hobby = #{record.hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remarks != null">
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.patientId != null">
+        patient_id = #{record.patientId,jdbcType=BIGINT},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=BIT},
+      </if>
+      <if test="record.createDate != null">
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateDate != null">
+        update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createStaff != null">
+        create_staff = #{record.createStaff,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update health
+    set id = #{record.id,jdbcType=BIGINT},
+      cando = #{record.cando,jdbcType=VARCHAR},
+      mental = #{record.mental,jdbcType=VARCHAR},
+      pulse = #{record.pulse,jdbcType=VARCHAR},
+      blood_pressure = #{record.bloodPressure,jdbcType=VARCHAR},
+      allergic_medicines = #{record.allergicMedicines,jdbcType=VARCHAR},
+      disease = #{record.disease,jdbcType=VARCHAR},
+      food = #{record.food,jdbcType=VARCHAR},
+      charact = #{record.charact,jdbcType=VARCHAR},
+      hobby = #{record.hobby,jdbcType=VARCHAR},
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      patient_id = #{record.patientId,jdbcType=BIGINT},
+      is_deleted = #{record.isDeleted,jdbcType=BIT},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      create_staff = #{record.createStaff,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.hospitalward.model.Health">
+    update health
+    <set>
+      <if test="cando != null">
+        cando = #{cando,jdbcType=VARCHAR},
+      </if>
+      <if test="mental != null">
+        mental = #{mental,jdbcType=VARCHAR},
+      </if>
+      <if test="pulse != null">
+        pulse = #{pulse,jdbcType=VARCHAR},
+      </if>
+      <if test="bloodPressure != null">
+        blood_pressure = #{bloodPressure,jdbcType=VARCHAR},
+      </if>
+      <if test="allergicMedicines != null">
+        allergic_medicines = #{allergicMedicines,jdbcType=VARCHAR},
+      </if>
+      <if test="disease != null">
+        disease = #{disease,jdbcType=VARCHAR},
+      </if>
+      <if test="food != null">
+        food = #{food,jdbcType=VARCHAR},
+      </if>
+      <if test="charact != null">
+        charact = #{charact,jdbcType=VARCHAR},
+      </if>
+      <if test="hobby != null">
+        hobby = #{hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="patientId != null">
+        patient_id = #{patientId,jdbcType=BIGINT},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createStaff != null">
+        create_staff = #{createStaff,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.hospitalward.model.Health">
+    update health
+    set cando = #{cando,jdbcType=VARCHAR},
+      mental = #{mental,jdbcType=VARCHAR},
+      pulse = #{pulse,jdbcType=VARCHAR},
+      blood_pressure = #{bloodPressure,jdbcType=VARCHAR},
+      allergic_medicines = #{allergicMedicines,jdbcType=VARCHAR},
+      disease = #{disease,jdbcType=VARCHAR},
+      food = #{food,jdbcType=VARCHAR},
+      charact = #{charact,jdbcType=VARCHAR},
+      hobby = #{hobby,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      patient_id = #{patientId,jdbcType=BIGINT},
+      is_deleted = #{isDeleted,jdbcType=BIT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      create_staff = #{createStaff,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

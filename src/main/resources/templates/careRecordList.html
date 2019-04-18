@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 数据表格</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/asset/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/asset/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/asset/css/animate.css" rel="stylesheet">
+    <link href="/asset/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/element-ui/2.5.4/theme-chalk/index.css" rel="stylesheet">
+    <link href="/asset/css/reset.css" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight page-content" id="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="">
+                        <a @click="addCareRecordDialog();" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                    </div>
+                    <el-table
+                            :data="careRecordList"
+                            border
+                            style="width: 100%">
+                        <el-table-column
+                                prop="patientName"
+                                label="病人姓名"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                prop="cardId"
+                                label="病人身份证号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="staffName"
+                                label="登记人">
+                        </el-table-column>
+                        <el-table-column
+                                prop="careInfo"
+                                label="护理信息">
+                        </el-table-column>
+                        <el-table-column
+                                prop="createDate"
+                                label="创建时间">
+                        </el-table-column>
+                        <el-table-column
+                                prop="updateDate"
+                                label="更新时间">
+                        </el-table-column>
+
+                        <el-table-column
+                                prop="hobby"
+                                label="操作记录">
+                            <template slot-scope="scope">
+                                <el-button @click="findPlan(scope.row)"
+                                           size="mini"
+                                >编辑
+                                </el-button>
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                >删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="1"
+                            :page-sizes="[5, 10, 20, 40]"
+                            :page-size="careRecordInfo.pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="careRecordInfo.total">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+        <el-dialog
+                :title="title"
+                :modal-append-to-body="false"
+                :visible.sync="dialogVisible"
+                width="80%"
+                height="40px"
+                class="care_plan_dialog"
+                :before-close="handleClose">
+            <el-form ref="form" :model="form" label-width="120px">
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="姓名：">
+                            <span v-if="form.id" v-text="form.patientName + '（' + form.cardId + ')'"></span>
+                            <el-select v-else v-model="form.patientId" placeholder="请选择用户">
+                                <el-option
+                                        v-for="item in patientList"
+                                        :key="item.id"
+                                        :label="item.name+ '(' + item.cardId + ')'"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="护理情况：">
+                            <el-select v-model="form.careType" placeholder="请选择用户">
+                                <el-option
+                                        v-for="item in careTypes"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="护理信息：">
+                            <el-input type="textarea" v-model="form.careInfo">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="负责人：">
+                            <el-select v-model="form.staffId" placeholder="请选择员工">
+                                <el-option
+                                        v-for="item in staffList"
+                                        :key="item.id"
+                                        :label="item.userName"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-table
+                        :data="form.carePlanList"
+                        border
+                        style="width: 100%">
+                    <el-table-column
+                            prop="carePlan"
+                            label="护理计划">
+                        <template slot-scope="scope">
+                            <el-input :disabled="scope.row.isComplete == true" v-model="scope.row.carePlan"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="medicinalId"
+                            label="药品">
+                        <template slot-scope="scope">
+                            <el-select :disabled="scope.row.isComplete == true" v-model="scope.row.medicinalId" placeholder="请选择职位">
+                                <el-option
+                                        v-for="item in medicinalList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="medicinalNum"
+                            label="数量">
+                        <template slot-scope="scope">
+                            <el-input :disabled="scope.row.isComplete == true" v-model="scope.row.medicinalNum"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="remarks"
+                            label="备注">
+                        <template slot-scope="scope">
+                            <el-input :disabled="scope.row.isComplete == true" v-model="scope.row.remarks"></el-input>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            label="操作">
+                        <template slot-scope="scope">
+                            <el-button
+                                    size="mini"
+                                    type="danger"
+                                    @click="handleDelete(scope.$index, scope.row)">删除
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="add_button" @click="carePlan">
+                    <i class="el-icon-plus avatar-add-row-icon"></i>
+
+                </div>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">取 消</el-button>
+                <el-button type="primary" @click="handleConfirm">确 定</el-button>
+            </span>
+        </el-dialog>
+
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="/asset/js/jquery.min.js?v=2.1.4"></script>
+<script src="/asset/js/bootstrap.min.js?v=3.3.6"></script>
+
+<script src="/asset/js/plugins/jeditable/jquery.jeditable.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    $(function () {
+        vm.find()
+    })
+    var vm = new Vue({
+        el: "#content",
+        data: function () {
+            return {
+                careRecordList: [],
+                careRecordInfo: {
+                    pageSize: 5,
+                    pageNum: 1
+                },
+                title: '',
+                form: {
+                    carePlanList: []
+                },
+                patientList: [],
+                dialogVisible: false,
+                staffList: [],
+                medicinalList: [],
+                careTypes: [{
+                    value: 1,
+                    label: '良好'
+                }, {
+                    value: 2,
+                    label: '一般'
+                }, {
+                    value: 3,
+                    label: '病重'
+                }],
+            }
+        },
+        methods: {
+            handleDelete(index, row) {
+                vm.form.carePlanList.splice(index,1)
+            },
+            carePlan() {
+                vm.form.carePlanList.push({})
+            },
+            addCareRecordDialog() {
+                vm.dialogVisible = true
+                vm.title = '添加药品'
+            },
+            handleConfirm() {
+                vm.dialogVisible = true
+                let method = 'post'
+                if (vm.form.id) {
+                    method = 'put'
+                }
+                $.ajax({
+                    url: "/product/careRecord",
+                    type: method,//请求方式
+                    data:JSON.stringify( vm.form),//请求数据
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.find()
+                            vm.handleClose()
+                        }
+                    },
+                })
+            },
+            handleClose() {
+                vm.form = {
+                    carePlanList: []
+                }
+                vm.dialogVisible = false
+            },
+            getStaff: function () {
+                $.ajax({
+                    url: "/customer/staff",
+                    type: "get",//请求方式
+                    data: {"position": 2},//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.staffList = response.data.list
+                        }
+                    },
+                })
+
+            },
+            getPatient: function () {
+                $.ajax({
+                    url: "/customer/patient_not_care_record",
+                    type: "get",//请求方式
+                    data: {"position": 1},//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.patientList = response.data
+                        }
+                    },
+                })
+
+            },
+            getMedicinal: function () {
+                $.ajax({
+                    url: "/product/medicinal",
+                    type: "get",//请求方式
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.medicinalList = response.data.list
+                        }
+                    },
+                })
+
+            },
+            find: function () {
+                $.ajax({
+                    url: "/product/careRecord",
+                    type: "get",//请求方式
+                    data: vm.careRecordInfo,//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.careRecordList = response.data.list
+                            vm.careRecordInfo = response.data
+                        }
+                    },
+                })
+
+            },
+            findPlan: function (data) {
+                vm.title = '编辑'
+                vm.form = data
+                let params = {
+                    careId: data.id
+                }
+                $.ajax({
+                    url: "/product/carePlan",
+                    data: params,//请求数据
+                    type: "get",//请求方式
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.form.carePlanList = response.data.list
+                            vm.dialogVisible = true
+                        }
+                    },
+                })
+            },
+            handleSizeChange: function (val) {
+                vm.careRecordInfo.pageSize = val
+                vm.find()
+            },
+            handleCurrentChange: function (val) {
+                vm.careRecordInfo.pageNum = val
+                vm.find()
+            }
+        },
+        created: function () {
+            this.getMedicinal()
+            this.getStaff()
+            this.getPatient()
+        },
+        mounted: function () {
+        }
+
+    })
+</script>
+<!--统计代码，可删除-->
+
+</body>
+<style>
+
+
+
+</style>
+</html>

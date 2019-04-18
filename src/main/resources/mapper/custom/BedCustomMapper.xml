@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospitalward.mapper.custom.BedCustomMapper">
+  <resultMap id="BaseResultMap" type="com.example.hospitalward.vo.BedAndRoomVO">
+    <id column="id" jdbcType="BIGINT" property="bedId" />
+    <result column="room_id" jdbcType="BIGINT" property="roomId" />
+    <result column="room_num" jdbcType="BIGINT" property="roomNum" />
+    <result column="room_type" jdbcType="BIGINT" property="roomType" />
+    <result column="bed_num" jdbcType="VARCHAR" property="bedNum" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="is_null" jdbcType="BIT" property="isNull" />
+    <result column="staff_id" jdbcType="BIGINT" property="staffId" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+
+  </resultMap>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select  b.id, b.room_id, b.bed_num, b.status, b.is_null, b.staff_id, b.is_deleted, b.create_date, b.update_date,
+    b.create_staff, r.room_num, r.room_type, s.name staff_name
+    from  bed b, room r , staff s
+    <where>
+      b.is_deleted = false and b.staff_id = s.id
+       and  b.room_id = r.id
+      <if test="bed.roomId != null">
+        and b.room_id like  #{bed.roomId,jdbcType=VARCHAR}
+      </if>
+      <if test="page.clause != null" >
+        order by   #{page.clause}
+      </if>
+      <if test="page.clause == null" >
+        order by   update_date DESC
+      </if>
+    </where>
+  </select>
+</mapper>

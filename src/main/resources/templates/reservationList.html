@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 数据表格</title>
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="/asset/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/asset/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/asset/css/animate.css" rel="stylesheet">
+    <link href="/asset/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/element-ui/2.5.4/theme-chalk/index.css" rel="stylesheet">
+    <link href="/asset/css/reset.css" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight page-content" id="content">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <div class="ibox-tools">
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="">
+                            <a onclick="fnClickAddRow();" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                        </div>
+                        <el-table
+                            :data="reservationList"
+                            border
+
+                            style="width: 100%">
+                            <el-table-column
+                                    prop="name"
+                                    label="预定人姓名"
+                                    width="180">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="phone"
+                                    label="联系方式">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="prelivedTime"
+                                    label="预订入住时间">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="presetTime"
+                                    label="预定时间">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="roomNum"
+                                    label="房间ID">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="roomType"
+                                    label="房间类型">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="bedNum"
+                                    label="床号">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="operation"
+                                    label="操作">
+                            </el-table-column>
+                        </el-table>
+                        <el-pagination
+                                @size-change="handleSizeChange"
+                                @current-change="handleCurrentChange"
+                                :current-page="1"
+                                :page-sizes="[5, 10, 20, 40]"
+                                :page-size="reservationInfo.pageSize"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="reservationInfo.total">
+                        </el-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全局js -->
+    <script src="/asset/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/asset/js/bootstrap.min.js?v=3.3.6"></script>
+
+    <script src="/asset/js/plugins/jeditable/jquery.jeditable.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
+    <!-- Page-Level Scripts -->
+    <script>
+        $(function () {
+            vm.find()
+        })
+        var vm = new Vue({
+            el: "#content",
+            data:  function() {
+                return {
+                    reservationList: [],
+                    reservationInfo: {
+                        pageSize: 5,
+                        pageNum: 1
+                    }
+                }
+            },
+            methods: {
+                find: function (){
+                    $.ajax({
+                        url : "/reservation/reservation",
+                        type : "get",//请求方式
+                        data : vm.reservationInfo,//请求数据
+                        dataType : "json",//返回类型
+                        success : function(data) {
+                            if (data.code === 0) {
+                                vm.reservationList = data.pageInfo.list
+                                vm.reservationInfo = data.pageInfo
+                            }
+                        },
+                    })
+
+                },
+                handleSizeChange : function ( val) {
+                    vm.reservationInfo.pageSize = val
+                    vm.find()
+                },
+                handleCurrentChange: function (val) {
+                    vm.reservationInfo.pageNum = val
+                    vm.find()
+                }
+            },
+            created: function () {
+            },
+            mounted:function(){
+            }
+
+        })
+    </script>
+    <!--统计代码，可删除-->
+
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospitalward.mapper.custom.PatientCustomMapper">
+  <resultMap id="BeanResultMap" type="com.example.hospitalward.vo.PatientVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="national" jdbcType="VARCHAR" property="national" />
+    <result column="education" jdbcType="VARCHAR" property="education" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="bed_id" jdbcType="BIGINT" property="bedId" />
+    <result column="staff_id" jdbcType="BIGINT" property="staffId" />
+    <result column="rname" jdbcType="VARCHAR" property="rname" />
+    <result column="rsex" jdbcType="INTEGER" property="rsex" />
+    <result column="rphone" jdbcType="VARCHAR" property="rphone" />
+    <result column="raddress" jdbcType="VARCHAR" property="raddress" />
+    <result column="rcard_id" jdbcType="VARCHAR" property="rcardId" />
+    <result column="rwork" jdbcType="VARCHAR" property="rwork" />
+    <result column="relation" jdbcType="VARCHAR" property="relation" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="on_here" jdbcType="BIT" property="onHere" />
+    <result column="in_date" jdbcType="DATE" property="inDate" />
+    <result column="leave_date" jdbcType="DATE" property="leaveDate" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="bed_num" jdbcType="VARCHAR" property="bedNum" />
+    <result column="room_num" jdbcType="INTEGER" property="roomNum" />
+    <result column="room_type" jdbcType="INTEGER" property="roomType" />
+
+  </resultMap>
+  <resultMap id="BaseResultMap" type="com.example.hospitalward.model.Patient">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="national" jdbcType="VARCHAR" property="national" />
+    <result column="education" jdbcType="VARCHAR" property="education" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="bed_id" jdbcType="BIGINT" property="bedId" />
+    <result column="staff_id" jdbcType="BIGINT" property="staffId" />
+    <result column="rname" jdbcType="VARCHAR" property="rname" />
+    <result column="rsex" jdbcType="INTEGER" property="rsex" />
+    <result column="rphone" jdbcType="VARCHAR" property="rphone" />
+    <result column="raddress" jdbcType="VARCHAR" property="raddress" />
+    <result column="rcard_id" jdbcType="VARCHAR" property="rcardId" />
+    <result column="rwork" jdbcType="VARCHAR" property="rwork" />
+    <result column="relation" jdbcType="VARCHAR" property="relation" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="on_here" jdbcType="BIT" property="onHere" />
+    <result column="in_date" jdbcType="DATE" property="inDate" />
+    <result column="leave_date" jdbcType="DATE" property="leaveDate" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+  </resultMap>
+  <select id="selectList" resultMap="BeanResultMap">
+    SELECT
+      p.id,
+      p.NAME,
+      p.sex,
+      p.national,
+      p.education,
+      p.address,
+      p.card_id,
+      p.bed_id,
+      p.staff_id,
+      p.rname,
+      p.rsex,
+      p.rphone,
+      p.raddress,
+      p.rcard_id,
+      p.rwork,
+      p.relation,
+      p.photo,
+      p.on_here,
+      p.in_date,
+      p.leave_date,
+      p.is_deleted,
+      p.create_date,
+      p.update_date,
+      p.create_staff,
+      b.bed_num,
+      r.room_num,
+      r.room_type,
+      s.NAME staff_name
+    FROM
+      patient p
+      LEFT JOIN staff s ON p.staff_id = s.id
+      LEFT JOIN bed b ON p.bed_id = b.id
+      LEFT JOIN room r ON b.room_id = r.id
+    <where>
+      p.is_deleted = false
+       <if test="patient.name != null">
+         and p.name like  #{patient.name,jdbcType=VARCHAR}
+       </if>
+       <if test="page.clause != null" >
+         order by   #{page.clause}
+       </if>
+       <if test="page.clause == null" >
+         order by   update_date DESC
+       </if>
+     </where>
+  </select>
+  <select id="selectListtNotAccount" resultMap="BaseResultMap">
+    SELECT
+      p.*
+    FROM
+      patient p
+      LEFT JOIN account a ON p.id = a.patient_id
+
+    <where>
+      p.is_deleted = FALSE
+      AND isNull( a.id )
+      <if test="name != null">
+        and p.name like  #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="cardId != null">
+        and p.card_id like  #{cardId,jdbcType=VARCHAR}
+      </if>
+        order by   update_date DESC
+    </where>
+  </select>
+  <select id="selectListtNotCareRecord" resultMap="BaseResultMap">
+    SELECT
+      p.*
+    FROM
+      patient p
+      LEFT JOIN care_record cr ON p.id = cr.patient_id
+      AND cr.is_complete = FALSE AND  cr.is_deleted = FALSE
+     LEFT JOIN account a ON p.id = a.patient_id
+    <where>
+      p.is_deleted = FALSE
+      AND isNull( cr.id )  AND isNull( a.id )
+      <if test="name != null">
+        and p.name like  #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="cardId != null">
+        and p.card_id like  #{cardId,jdbcType=VARCHAR}
+      </if>
+      order by   update_date DESC
+    </where>
+  </select>
+</mapper>

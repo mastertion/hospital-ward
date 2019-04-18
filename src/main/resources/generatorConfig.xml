@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+    <!-- mysql jar 文件位置 -->
+    <classPathEntry location="D:\淘淘商城\taotao-sso\target\taotao-sso\WEB-INF\lib\mysql-connector-java-5.1.32.jar" />
+    <context id="store" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressAllComments" value="true" />
+            <!-- 是否去除所有自动生成的文件的时间戳，默认为false -->
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+        <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://47.100.115.59:3306/HospitalWard?tinyInt1isBit=true"
+                        userId="master-lee"
+                        password="286916">
+        </jdbcConnection>
+        <!-- targetPackage:包名称(自定义)  targetProject：项目路径(自定义)   -->
+        <!--定义model的包名称-->
+        <javaModelGenerator targetPackage="com.example.hospitalward.model" targetProject="src/main/java">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="false" />
+            <!-- 从数据库返回的值被清理前后的空格  -->
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- 配置生成相应的实体Mapper.xml，对于Mapper3.X我们需要把type="XMLMAPPER" -->
+        <!-- targetPackage:包名称(自定义)  targetProject：项目路径(自定义)   -->
+        <sqlMapGenerator targetPackage="mapper.auto" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <!-- 配置生成相应的接口类，对应与Mapper.xml中的一系列CRUD方法SQL语句 -->
+        <!-- targetPackage:包名称(自定义)  targetProject：项目路径(自定义)   -->
+        <javaClientGenerator targetPackage="com.example.hospitalward.mapper.auto" targetProject="src/main/java" type="XMLMAPPER">
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+        <!-- 通讯录人员表 -->
+        <!--<table tableName="account"-->
+            <!--domainObjectName="Account" >-->
+            <!--<generatedKey column="id" sqlStatement="JDBC" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="admin"-->
+            <!--domainObjectName="Admin" >-->
+            <!--<generatedKey column="id" sqlStatement="JDBC" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="bed"-->
+            <!--domainObjectName="Bed" >-->
+            <!--<generatedKey column="id" sqlStatement="JDBC" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="medicinal"-->
+            <!--domainObjectName="Medicinal" >-->
+            <!--<generatedKey column="id" sqlStatement="JDBC" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="account"-->
+            <!--domainObjectName="Account" >-->
+        <!--</table>-->
+        <!--<table tableName="admin"-->
+            <!--domainObjectName="Admin" >-->
+        <!--</table>-->
+        <!--<table tableName="bed"-->
+            <!--domainObjectName="Bed" >-->
+        <!--</table>-->
+        <table tableName="care_plan"
+            domainObjectName="CarePlan" >
+            <columnOverride column="care_plan" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <columnOverride column="remarks" javaType="java.lang.String" jdbcType="VARCHAR" />
+
+        </table>
+        <table tableName="care_record"
+            domainObjectName="CareRecord" >
+            <columnOverride column="care_info" javaType="java.lang.String" jdbcType="VARCHAR" />
+        </table>
+        <!--<table tableName="health"-->
+            <!--domainObjectName="Health" >-->
+            <!--<columnOverride column="remarks" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+        <!--</table>-->
+        <!--<table tableName="medicinal"-->
+            <!--domainObjectName="Medicinal" >-->
+        <!--</table>-->
+        <!--<table tableName="patient"-->
+            <!--domainObjectName="Patient" >-->
+        <!--</table>-->
+        <!--<table tableName="reserve"-->
+            <!--domainObjectName="Reserve" >-->
+        <!--</table>-->
+        <!--<table tableName="room"-->
+            <!--domainObjectName="Room" >-->
+        <!--</table>-->
+        <!--<table tableName="staff"-->
+            <!--domainObjectName="Staff" >-->
+        <!--</table>-->
+
+    </context>
+</generatorConfiguration>
