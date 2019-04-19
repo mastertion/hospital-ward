@@ -11,7 +11,15 @@ import java.util.List;
 public interface PatientCustomMapper extends PatientMapper {
     List<Patient> selectList(@Param("patient")Patient patient, @Param("page") Page page);
 
-    List<Patient> selectListtNotAccount(Patient patient);
+    List<Patient> selectListNotAccount(Patient patient);
 
-    List<Patient> selectListtNotCareRecord(Patient patient);
+    List<Patient> selectListNotCareRecord(Patient patient);
+
+    List<Patient> selectListReserve(@Param("patient")Patient patient, @Param("page") Page page);
+
+    List<Patient> selectListCheckIn(@Param("patient")Patient patient, @Param("page") Page page);
+
+    List<Patient> selectListNotCheckInAndReserve(Patient patient);
+
+
 }

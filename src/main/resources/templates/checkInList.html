@@ -60,25 +60,6 @@
                                 prop="bedNum"
                                 label="床号">
                         </el-table-column>
-                        <el-table-column
-                                label="操作"
-                                width="230">
-                            <template slot-scope="scope">
-                                <el-button
-                                        @click="editCheckIn(scope.row)"
-                                        size="mini"
-                                >入住
-                                </el-button>
-                                <el-button
-                                        size="mini"
-                                        type="danger"
-                                        @click="delCheckIn(scope.row)"
-
-                                >取消预订
-                                </el-button>
-                            </template>
-                        </el-table-column>
-
                     </el-table>
                     <el-pagination
                             @size-change="handleSizeChange"
@@ -140,95 +121,6 @@
             }
         },
         methods: {
-            delCheckIn (row) {
-                this.$confirm('此用户是否取消预订, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    $.ajax({
-                        url: "/customer/patient_cancel_reserve",
-                        type: "put",//请求方式
-                        data: row,//请求数据
-                        dataType: "json",//返回类型
-                        success: function (response) {
-                            if (response.code === 200 ) {
-                                if (response.data) {
-                                    vm.find()
-                                    vm.$message({
-                                        type: 'success',
-                                        message: '取消预订成功!'
-                                    });
-                                } else {
-                                    vm.$message({
-                                        type: 'info',
-                                        message: '取消预订失败!'
-                                    });
-                                }
-                            } else {
-                                vm.$message({
-                                    type: 'info',
-                                    message: '取消预订失败!'
-                                });
-                            }
-                        },
-                    })
-
-
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消'
-                    });
-                });
-            },
-            editCheckIn (row) {
-                this.$confirm('此用户是否入住, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    $.ajax({
-                        url: "/customer/patient_check_in",
-                        type: "put",//请求方式
-                        data: row,//请求数据
-                        dataType: "json",//返回类型
-                        success: function (response) {
-                            if (response.code === 200 ) {
-                                if (response.data) {
-                                    vm.find()
-                                    vm.$message({
-                                        type: 'success',
-                                        message: '入住成功!'
-                                    });
-                                } else {
-                                    vm.$message({
-                                        type: 'info',
-                                        message: '入住失败!'
-                                    });
-                                }
-                            } else {
-                                vm.$message({
-                                    type: 'info',
-                                    message: '入住失败!'
-                                });
-                            }
-                        },
-                    })
-
-
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消入住'
-                    });
-                });
-            },
-            editPatientDialog(data) {
-                vm.title = '编辑'
-                vm.dialogVisible = true
-                vm.form = data.row
-            },
             addPatientDialog() {
                 vm.dialogVisible = true
                 vm.title = '录入用户信息'
@@ -276,7 +168,7 @@
             },
             find: function () {
                 $.ajax({
-                    url: "/customer/patient_reserve",
+                    url: "/customer/patient_check_in",
                     type: "get",//请求方式
                     data: vm.patientInfo,//请求数据
                     dataType: "json",//返回类型

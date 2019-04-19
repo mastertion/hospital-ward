@@ -23,9 +23,13 @@ public class HospitalWardController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @GetMapping("/index_v1")
+    @GetMapping("/index")
     public String index() {
-        return  "index_v1";
+        return  "index";
+    }
+    @GetMapping("/login")
+    public String login() {
+        return  "login";
     }
     @GetMapping("/staff")
     public String staff() {
@@ -50,6 +54,18 @@ public class HospitalWardController {
     @GetMapping("/account")
     public String account() {
         return  "accountList";
+    }
+    @GetMapping("/bed")
+    public String bed() {
+        return  "bedList";
+    }
+    @GetMapping("/reservation")
+    public String reservation() {
+        return  "reservationList";
+    }
+    @GetMapping("/checkIn")
+    public String checkIn() {
+        return  "checkInList";
     }
     @RequestMapping("/upload")
     @ResponseBody

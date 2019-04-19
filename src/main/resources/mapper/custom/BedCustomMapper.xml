@@ -19,14 +19,35 @@
   </resultMap>
 
   <select id="selectList" resultMap="BaseResultMap">
-    select  b.id, b.room_id, b.bed_num, b.status, b.is_null, b.staff_id, b.is_deleted, b.create_date, b.update_date,
-    b.create_staff, r.room_num, r.room_type, s.name staff_name
-    from  bed b, room r , staff s
+
+    SELECT
+      b.id,
+      b.room_id,
+      b.bed_num,
+      b.STATUS,
+      b.is_null,
+      b.staff_id,
+      b.is_deleted,
+      b.create_date,
+      b.update_date,
+      b.create_staff,
+      r.room_num,
+      r.room_type,
+      s.NAME staff_name
+    FROM
+      bed b
+      LEFT JOIN room r ON b.room_id = r.id
+      LEFT JOIN staff s ON b.staff_id = s.id
     <where>
-      b.is_deleted = false and b.staff_id = s.id
-       and  b.room_id = r.id
+      b.is_deleted = FALSE
       <if test="bed.roomId != null">
         and b.room_id like  #{bed.roomId,jdbcType=VARCHAR}
+      </if>
+      <if test="bed.status != null">
+        and b.status = #{bed.status,jdbcType=BIT}
+      </if>
+      <if test="bed.isNull != null">
+        and b.is_null = #{bed.isNull,jdbcType=BIT}
       </if>
       <if test="page.clause != null" >
         order by   #{page.clause}
