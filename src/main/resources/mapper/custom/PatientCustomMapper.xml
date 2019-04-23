@@ -257,7 +257,8 @@
 
         <where>
             p.is_deleted = FALSE AND isNull( p.bed_id  )
-            AND !isNull( h.id )  AND !isNull( a.id )
+--             AND !isNull( h.id )
+            AND !isNull( a.id )
             <if test="name != null">
                 and p.name like  #{name,jdbcType=VARCHAR}
             </if>

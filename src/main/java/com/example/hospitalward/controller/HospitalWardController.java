@@ -74,6 +74,11 @@ public class HospitalWardController {
     public String menu() {
         return  "menuList";
     }
+    @GetMapping("/position")
+    public String position() {
+        return  "positionList";
+    }
+
     @RequestMapping("/upload")
     @ResponseBody
     public Map uploadFile(@RequestParam("smfile") MultipartFile smfile)throws Exception{

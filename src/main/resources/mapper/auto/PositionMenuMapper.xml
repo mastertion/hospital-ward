@@ -3,11 +3,12 @@
 <mapper namespace="com.example.hospitalward.mapper.auto.PositionMenuMapper">
   <resultMap id="BaseResultMap" type="com.example.hospitalward.model.PositionMenu">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="menu_id" jdbcType="BIGINT" property="menuId" />
+    <result column="menu_id" jdbcType="VARCHAR" property="menuId" />
     <result column="position" jdbcType="INTEGER" property="position" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, menu_id, position, is_deleted, create_date, update_date
+    id, menu_id, position, is_deleted, create_date, update_date, name
   </sql>
   <select id="selectByExample" parameterType="com.example.hospitalward.model.PositionMenuExample" resultMap="BaseResultMap">
     select
@@ -102,11 +103,11 @@
   </delete>
   <insert id="insert" parameterType="com.example.hospitalward.model.PositionMenu">
     insert into position_menu (id, menu_id, position, 
-      is_deleted, create_date, update_date
-      )
-    values (#{id,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT}, #{position,jdbcType=INTEGER}, 
-      #{isDeleted,jdbcType=BIT}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
-      )
+      is_deleted, create_date, update_date, 
+      name)
+    values (#{id,jdbcType=BIGINT}, #{menuId,jdbcType=VARCHAR}, #{position,jdbcType=INTEGER}, 
+      #{isDeleted,jdbcType=BIT}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.hospitalward.model.PositionMenu">
     insert into position_menu
@@ -129,13 +130,16 @@
       <if test="updateDate != null">
         update_date,
       </if>
+      <if test="name != null">
+        name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
       <if test="menuId != null">
-        #{menuId,jdbcType=BIGINT},
+        #{menuId,jdbcType=VARCHAR},
       </if>
       <if test="position != null">
         #{position,jdbcType=INTEGER},
@@ -148,6 +152,9 @@
       </if>
       <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -164,7 +171,7 @@
         id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.menuId != null">
-        menu_id = #{record.menuId,jdbcType=BIGINT},
+        menu_id = #{record.menuId,jdbcType=VARCHAR},
       </if>
       <if test="record.position != null">
         position = #{record.position,jdbcType=INTEGER},
@@ -178,6 +185,9 @@
       <if test="record.updateDate != null">
         update_date = #{record.updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -186,11 +196,12 @@
   <update id="updateByExample" parameterType="map">
     update position_menu
     set id = #{record.id,jdbcType=BIGINT},
-      menu_id = #{record.menuId,jdbcType=BIGINT},
+      menu_id = #{record.menuId,jdbcType=VARCHAR},
       position = #{record.position,jdbcType=INTEGER},
       is_deleted = #{record.isDeleted,jdbcType=BIT},
       create_date = #{record.createDate,jdbcType=TIMESTAMP},
-      update_date = #{record.updateDate,jdbcType=TIMESTAMP}
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      name = #{record.name,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -199,7 +210,7 @@
     update position_menu
     <set>
       <if test="menuId != null">
-        menu_id = #{menuId,jdbcType=BIGINT},
+        menu_id = #{menuId,jdbcType=VARCHAR},
       </if>
       <if test="position != null">
         position = #{position,jdbcType=INTEGER},
@@ -213,16 +224,20 @@
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.hospitalward.model.PositionMenu">
     update position_menu
-    set menu_id = #{menuId,jdbcType=BIGINT},
+    set menu_id = #{menuId,jdbcType=VARCHAR},
       position = #{position,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=BIT},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

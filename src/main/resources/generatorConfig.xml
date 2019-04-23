@@ -14,9 +14,9 @@
         </commentGenerator>
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://47.100.115.59:3306/HospitalWard?tinyInt1isBit=true"
-                        userId="master-lee"
-                        password="286916">
+                        connectionURL="jdbc:mysql://localhost:3306/HospitalWard?tinyInt1isBit=true"
+                        userId="root"
+                        password="123456">
         </jdbcConnection>
         <!-- targetPackage:包名称(自定义)  targetProject：项目路径(自定义)   -->
         <!--定义model的包名称-->
@@ -97,9 +97,9 @@
         <!--<table tableName="log_history"-->
             <!--domainObjectName="LogHistory" >-->
         <!--</table>-->
-        <table tableName="menu"
-            domainObjectName="Menu" >
-        </table>
+        <!--<table tableName="menu"-->
+            <!--domainObjectName="Menu" >-->
+        <!--</table>-->
         <table tableName="position_menu"
             domainObjectName="PositionMenu" >
         </table>

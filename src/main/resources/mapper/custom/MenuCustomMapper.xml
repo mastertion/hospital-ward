@@ -27,7 +27,7 @@
                 </if>
             </where>) mpm
             <where>
-                m.id = mpm.menu_id
+                instr( mpm.menu_id, m.id )
                 AND m.is_enable = TRUE
                 AND m.is_deleted = FALSE
             </where>
@@ -46,7 +46,7 @@
                 </if>
             </where> ) mpm
             <where>
-                m.id = mpm.menu_id
+                instr( mpm.menu_id, m.id )
                 AND m.is_enable = TRUE
                 AND m.is_deleted = FALSE
             </where>
@@ -70,13 +70,12 @@
             FROM
                 menu m
                 LEFT JOIN menu m2 ON m.id = m2.parent_id
+                AND m2.is_deleted = FALSE
             <where>
                 ISNULL( m.parent_id )
-                AND m.is_enable = TRUE
                 AND m.is_deleted = FALSE
-                AND m2.is_enable = TRUE
-                AND m2.is_deleted = FALSE
             </where>
+
     </select>
     <resultMap id="BaseResultTree" type="com.example.hospitalward.vo.MenuTree">
     <id column="id" jdbcType="BIGINT" property="id" />

@@ -5,7 +5,7 @@ import java.util.Date;
 public class PositionMenu {
     private Long id;
 
-    private Long menuId;
+    private String menuId;
 
     private Integer position;
 
@@ -15,6 +15,8 @@ public class PositionMenu {
 
     private Date updateDate;
 
+    private String name;
+
     public Long getId() {
         return id;
     }
@@ -23,12 +25,12 @@ public class PositionMenu {
         this.id = id;
     }
 
-    public Long getMenuId() {
+    public String getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
+    public void setMenuId(String menuId) {
+        this.menuId = menuId == null ? null : menuId.trim();
     }
 
     public Integer getPosition() {
@@ -61,5 +63,13 @@ public class PositionMenu {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 }

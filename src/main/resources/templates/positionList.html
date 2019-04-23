@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/asset/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/asset/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/asset/css/animate.css" rel="stylesheet">
+    <link href="/asset/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/element-ui/2.5.4/theme-chalk/index.css" rel="stylesheet">
+    <link href="/asset/css/reset.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight page-content" id="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="">
+                        <a @click="addPositionDialog" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                    </div>
+                    <el-button
+                            plain
+                            @click="editPositionDialog(1)">
+                        医生
+                    </el-button>
+                    <el-button
+                            plain
+                            @click="editPositionDialog(2)">
+                        护士
+                    </el-button>
+                    <el-button
+                            plain
+                            @click="editPositionDialog(3)">
+                        前台
+                    </el-button>
+                </div>
+            </div>
+        </div>
+        <el-dialog
+                :title="title"
+                :modal-append-to-body="false"
+                :visible.sync="dialogVisible"
+                width="50%"
+                :before-close="handleClose">
+            <el-form ref="form" :model="form" label-width="120px">
+                <el-tree
+                        :data="menu"
+                        show-checkbox
+                        :default-expanded-keys="menuPositionList"
+                        :check-strictly="true"
+                        ref="tree"
+                        node-key="id"
+                        :props="defaultProps">
+                </el-tree>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">取 消</el-button>
+                <el-button type="primary" @click="handleConfirm">确 定</el-button>
+            </span>
+        </el-dialog>
+
+    </div>
+</div>
+
+
+</body>
+<!-- 全局js -->
+<script src="/asset/js/jquery.min.js?v=2.1.4"></script>
+<script src="/asset/js/bootstrap.min.js?v=3.3.6"></script>
+
+
+<script src="/asset/js/plugins/jeditable/jquery.jeditable.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
+<!-- Page-Level Scripts -->
+<script>
+    $(function () {
+        vm.find()
+    })
+    var vm = new Vue({
+        el: "#content",
+        data: function () {
+            return {
+                defaultProps: {
+                    children: 'children',
+                    label: 'name'
+                },
+                title: '添加路径',
+                dialogVisible: false,
+                form: {
+
+                },
+                menuPosition: {},
+                menuPositionList: [],
+                menu: [
+                ],
+                options: [{
+                    value: 1,
+                    label: '根菜单'
+                }, {
+                    value: 2,
+                    label: '二级菜单'
+                }],
+            }
+        },
+        methods: {
+            find: function () {
+                $.ajax({
+                    url: "/menu_tree",
+                    type: "get",//请求方式
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.menu = response.data
+                        }
+                    },
+                })
+
+            },
+            handleConfirm() {
+                vm.dialogVisible = true
+                vm.edit()
+            },
+            edit: function () {
+               let menuList =  vm.$refs.tree.getCheckedKeys()
+                vm.form.menuId = menuList.join(',')
+                console.log(vm.form)
+                let method = 'post'
+                if (vm.form.id) {
+                    method = 'put'
+                }
+                $.ajax({
+                    url: "/position_menu",
+                    type: method,//请求方式
+                    data: vm.form,//请求数据
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200 && response.data ) {
+                            vm.find()
+                            vm.handleClose()
+                            vm.$message({
+                                type: 'success',
+                                message: '操作成功!'
+                            });
+                        } else {
+                            vm.$message({
+                                type: 'info',
+                                message: '操作失败!'
+                            });
+                        }
+                    },
+                })
+            },
+            handleSizeChange: function (val) {
+                vm.staffInfo.pageSize = val
+                vm.find()
+            },
+            handleCurrentChange: function (val) {
+                vm.staffInfo.pageNum = val
+                vm.find()
+            },
+            handleClose() {
+                vm.form = {
+                }
+                vm.$refs.tree.setCheckedKeys([])
+
+                vm.dialogVisible = false
+            },
+            addPositionDialog() {
+                vm.dialogVisible = true
+                vm.title = '添加员工'
+            },
+            editPositionDialog(data) {
+                vm.dialogVisible = true
+                $.ajax({
+                    url: "/position_menu",
+                    type: "get",//请求方式
+                    data: {position: data},
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.form = response.data
+                            vm.form.menuPositionList =  response.data ? response.data.menuId ?  response.data.menuId.split(",").map(Number)  :[] :[]
+                            vm.$refs.tree.setCheckedKeys(vm.form.menuPositionList)
+                        }
+                    },
+                })
+                vm.form = Object.assign({},  data.row)
+            },
+            handleAvatarSuccess(res, file) {
+                if (file.response.code === '200') {
+                    // this.form.photo = URL.createObjectURL(file.response);
+                    this.form.photo = file.response.url;
+                } else {
+                    this.$message.error("上传失败");
+                }
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            }
+        },
+        created: function () {
+        },
+        mounted: function () {
+        }
+    })
+</script>
+<!--统计代码，可删除-->
+</html>
