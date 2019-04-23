@@ -17,7 +17,31 @@
     <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
 
   </resultMap>
+  <resultMap id="BaseResultTree" type="com.example.hospitalward.vo.BedAndRoomTree">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="room_num" jdbcType="VARCHAR" property="roomNum" />
+    <result column="room_type" jdbcType="INTEGER" property="roomType" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_staff" jdbcType="BIGINT" property="createStaff" />
+    <result column="room_num" jdbcType="VARCHAR" property="name" />
 
+      <collection property="children" ofType="com.example.hospitalward.vo.BedVO">
+        <id column="bed_id" jdbcType="BIGINT" property="id" />
+        <result column="room_id" jdbcType="BIGINT" property="roomId" />
+        <result column="bed_num" jdbcType="VARCHAR" property="bedNum" />
+        <result column="bed_status" jdbcType="BIT" property="status" />
+        <result column="bed_is_null" jdbcType="BIT" property="isNull" />
+        <result column="bed_staff_id" jdbcType="BIGINT" property="staffId" />
+        <result column="bed_is_deleted" jdbcType="BIT" property="isDeleted" />
+        <result column="bed_create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="bed_update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="bed_create_staff" jdbcType="BIGINT" property="createStaff" />
+        <result column="bed_num" jdbcType="VARCHAR" property="name" />
+      </collection>
+
+  </resultMap>
   <select id="selectList" resultMap="BaseResultMap">
 
     SELECT
@@ -56,5 +80,37 @@
         order by   update_date DESC
       </if>
     </where>
+  </select>
+
+  <select id="getBedAndRoomTree" resultMap="BaseResultTree">
+    SELECT
+        r.*,
+        b.id bed_id,
+        b.room_id,
+        b.bed_num,
+        b.STATUS,
+        b.is_null,
+        b.staff_id,
+        b.is_deleted bed_is_deleted,
+        b.create_date bed_create_date,
+        b.update_date bed_update_date,
+        b.create_staff bed_create_staff
+    FROM
+        room r
+        LEFT JOIN bed b ON r.id = b.room_id
+      <where>
+        r.is_deleted = FALSE
+        AND b.is_deleted = FALSE
+          <if test="roomType != null">
+              and r.room_type = #{roomType,jdbcType=BIT}
+          </if>
+          <if test="status != null">
+              and b.status = #{status,jdbcType=BIT}
+          </if>
+          <if test="isNull != null">
+              and b.is_null = #{isNull,jdbcType=BIT}
+          </if>
+
+      </where>
   </select>
 </mapper>

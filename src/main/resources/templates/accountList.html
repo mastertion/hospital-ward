@@ -187,7 +187,7 @@
             editAccountDialog(data) {
                 vm.title = '编辑'
                 vm.dialogVisible = true
-                vm.form = data.row
+                vm.form = Object.assign({},  data.row)
                 vm.form.payment = ''
                 vm.form.complement = ''
 

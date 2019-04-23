@@ -212,6 +212,74 @@
                     sex: 1,
                     photo: ''
                 },
+                menu: [
+                    {
+                        name: '接待',
+                        path: '#',
+                        children:[
+                            {
+                                name: '床位管理',
+                                path: 'bed'
+                            },
+                            {
+                                name: '预定管理',
+                                path: 'reservation'
+                            },
+                            {
+                                name: '入住管理',
+                                path: 'checkIn'
+                            }
+                        ]
+                    },
+                    {
+                        name: '护理',
+                        path: '#',
+                        children:[
+                            {
+                                name: '护理信息',
+                                path: 'careRecord'
+                            },
+                            {
+                                name: '护理计划',
+                                path: 'carePlan'
+                            }
+                        ]
+                    },
+                    {
+                        name: '员工管理',
+                        path: '#',
+                        children:[
+                            {
+                                name: '员工信息',
+                                path: 'staff'
+                            }
+                        ]
+                    },
+                    {
+                        name: '用户管理',
+                        path: '#',
+                        children:[
+                            {
+                                name: '用户基本信息',
+                                path: 'patient'
+                            },
+                            {
+                                name: '用户账户',
+                                path: 'account'
+                            }
+                        ]
+                    },
+                    {
+                        name: '药品管理',
+                        path: '#',
+                        children:[
+                            {
+                                name: '药品管理',
+                                path: 'medicinal'
+                            }
+                        ]
+                    }
+                ],
                 options: [{
                     value: 1,
                     label: '医生'
@@ -281,7 +349,7 @@
             },
             editStaffDialog(data) {
                 vm.dialogVisible = true
-                vm.form = data.row
+                vm.form = Object.assign({},  data.row)
             },
             handleConfirm() {
                 vm.dialogVisible = true
@@ -291,7 +359,6 @@
                 if (file.response.code === '200') {
                     // this.form.photo = URL.createObjectURL(file.response);
                     this.form.photo = file.response.url;
-                    console.log(this.form.photo)
                 } else {
                     this.$message.error("上传失败");
                 }

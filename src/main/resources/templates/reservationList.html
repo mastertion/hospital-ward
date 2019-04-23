@@ -98,7 +98,35 @@
                 :visible.sync="dialogVisible"
                 width="80%"
                 :before-close="handleClose">
-            <el-form ref="form" :model="form" label-width="120px">
+            <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+                <el-form-item label="用户：" prop="id">
+                    <el-select v-model="form.id" placeholder="请选择用户">
+                        <el-option
+                                v-for="item in patients"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="房间类型：" >
+                    <el-select v-model="form.roomType" @change="getBed" placeholder="请选择房间类型">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="床位：" prop="roomBedId">
+                    <el-cascader
+                            :props="optionProps"
+                            :options="bedList"
+                            v-model="form.roomBedId"
+                            @change="handleChange">
+                    </el-cascader>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">取 消</el-button>
@@ -127,7 +155,16 @@
         el: "#content",
         data: function () {
             return {
+                options: [{
+                    value: 1,
+                    label: '单人间'
+                }, {
+                    value: 2,
+                    label: '双人间'
+                }],
                 patientList: [],
+                patients: [],
+                bedList: [],
                 patientInfo: {
                     pageSize: 5,
                     pageNum: 1
@@ -137,9 +174,25 @@
                 },
                 dialogVisible: false,
                 staffList: [],
+                optionProps: {
+                    value: 'id',
+                    label: 'name',
+                    children: 'children'
+                },
+                 rules: {
+                     id: [
+                         { required: true, message: '请选用户', trigger: 'change'},
+                     ],
+                     roomBedId: [
+                         { required: true, message: '请选床位', trigger: 'change'},
+                     ]
+                 }
             }
         },
         methods: {
+            handleChange () {
+
+            },
             delCheckIn (row) {
                 this.$confirm('此用户是否取消预订, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -173,8 +226,6 @@
                             }
                         },
                     })
-
-
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -189,7 +240,7 @@
                     type: 'warning'
                 }).then(() => {
                     $.ajax({
-                        url: "/customer/patient_check_in",
+                        url: "/customer/patient_to_check_in",
                         type: "put",//请求方式
                         data: row,//请求数据
                         dataType: "json",//返回类型
@@ -215,8 +266,6 @@
                             }
                         },
                     })
-
-
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -224,40 +273,46 @@
                     });
                 });
             },
-            editPatientDialog(data) {
-                vm.title = '编辑'
-                vm.dialogVisible = true
-                vm.form = data.row
-            },
             addPatientDialog() {
                 vm.dialogVisible = true
                 vm.title = '录入用户信息'
+                vm.getPatient()
+                vm.getBed()
             },
             handleConfirm() {
                 vm.dialogVisible = true
-                let method = 'post'
-                if (vm.form.id) {
-                    method = 'put'
-                }
-                $.ajax({
-                    url: "/customer/patient",
-                    type: method,//请求方式
-                    data: vm.form,//请求数据
-                    dataType: "json",//返回类型
-                    success: function (response) {
-                        if (response.code === 200) {
-                            vm.find()
-                            vm.handleClose()
-                        }
-                    },
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
+                        vm.form.bedId = vm.form.roomBedId[1]
+                        $.ajax({
+                            url: "/customer/patient_reserve",
+                            type: "put",//请求方式
+                            data: vm.form,//请求数据
+                            dataType: "json",//返回类型
+                            success: function (response) {
+                                if (response.code === 200 && response.data) {
+                                    vm.$message({
+                                        type: 'success',
+                                        message: '预订成功!'
+                                    });
+                                    vm.find()
+                                    vm.handleClose()
+                                }else{
+                                    vm.$message({
+                                        type: 'info',
+                                        message: '预订失败!'
+                                    });
+                                }
+                            },
+                        })
+                    } else {
+                        return false;
+                    }
                 })
             },
             handleClose() {
-                vm.form = {
-                    sex: 1,
-                    rsex: 1,
-                    photo: ''
-                }
+                vm.form ={}
+                this.$refs.form.resetFields()
                 vm.dialogVisible = false
             },
             getStaff: function () {
@@ -269,6 +324,33 @@
                     success: function (response) {
                         if (response.code === 200) {
                             vm.staffList = response.data.list
+                        }
+                    },
+                })
+
+            },
+            getPatient: function () {
+                $.ajax({
+                    url: "/customer/patient_not_check_in_reserve",
+                    type: "get",//请求方式
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.patients = response.data
+                        }
+                    },
+                })
+
+            },
+            getBed: function () {
+                $.ajax({
+                    url: "/product/BedAndRoomTree",
+                    type: "get",//请求方式
+                    data: {roomType: vm.form.roomType},
+                    dataType: "json",//返回类型
+                    success: function (response) {
+                        if (response.code === 200) {
+                            vm.bedList = response.data
                         }
                     },
                 })

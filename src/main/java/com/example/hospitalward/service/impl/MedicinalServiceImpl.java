@@ -3,6 +3,7 @@ package com.example.hospitalward.service.impl;
 import com.example.hospitalward.mapper.custom.MedicinalCustomMapper;
 import com.example.hospitalward.model.Medicinal;
 import com.example.hospitalward.service.MedicinalService;
+import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
 import com.github.pagehelper.PageHelper;
@@ -39,6 +40,7 @@ public class MedicinalServiceImpl implements MedicinalService {
         medicinal.setUpdateDate(new Date());
         medicinal.setIsDeleted(false);
         int result = medicinalCustomMapper.insertSelective(medicinal);
+        LogHistoryUtils.log(medicinal.getId().toString(), "添加药品" + medicinal.getName(), medicinal);
         return result;
     }
 
@@ -47,6 +49,7 @@ public class MedicinalServiceImpl implements MedicinalService {
         medicinal.setUpdateDate(new Date());
         medicinal.setIsDeleted(false);
         int result = medicinalCustomMapper.updateByPrimaryKeySelective(medicinal);
+        LogHistoryUtils.log(medicinal.getId().toString(), "补充药品" + medicinal.getName(), medicinal);
         return result;
     }
 }

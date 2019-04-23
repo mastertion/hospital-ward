@@ -306,7 +306,6 @@
                 $.ajax({
                     url: "/customer/patient_not_care_record",
                     type: "get",//请求方式
-                    data: {"position": 1},//请求数据
                     dataType: "json",//返回类型
                     success: function (response) {
                         if (response.code === 200) {
@@ -346,7 +345,7 @@
             },
             findPlan: function (data) {
                 vm.title = '编辑'
-                vm.form = data
+                vm.form =  Object.assign({}, data)
                 let params = {
                     careId: data.id
                 }

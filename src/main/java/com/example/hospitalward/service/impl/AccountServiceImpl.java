@@ -4,6 +4,7 @@ import com.example.hospitalward.mapper.custom.AccountCustomerMapper;
 import com.example.hospitalward.model.Account;
 import com.example.hospitalward.model.Patient;
 import com.example.hospitalward.service.AccountService;
+import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
 import com.github.pagehelper.PageHelper;
@@ -36,6 +37,7 @@ public class AccountServiceImpl implements AccountService {
         account.setUpdateDate(new Date());
         account.setPayDate(new Date());
         int result = accountCustomerMapper.insertSelective(account);
+        LogHistoryUtils.log(account.getPatientId().toString(), "创建账户信息", account);
         return result;
     }
 

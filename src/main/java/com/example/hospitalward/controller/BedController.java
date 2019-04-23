@@ -6,10 +6,14 @@ import com.example.hospitalward.service.BedService;
 import com.example.hospitalward.service.RoomService;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.ServerResult;
+import com.example.hospitalward.vo.BedAndRoomTree;
+import com.example.hospitalward.vo.BedAndRoomVO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("product")
@@ -31,7 +35,6 @@ public class BedController {
         return  ServerResult.error();
 
     }
-
     @PostMapping("/room")
     @ResponseBody
     public ServerResult create(Room room) {
@@ -62,6 +65,18 @@ public class BedController {
         try {
             Room room = roomService.select(roomNum);
             return  ServerResult.ok().put("data",room );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  ServerResult.error();
+
+    }
+    @GetMapping("/BedAndRoomTree")
+    @ResponseBody
+    public ServerResult getBedAndRoomTree(BedAndRoomVO bedAndRoomVO) {
+        try {
+            List<BedAndRoomTree> bedAndRoomTree = bedService.getBedAndRoomTree(bedAndRoomVO);
+            return  ServerResult.ok().put("data",bedAndRoomTree );
         } catch (Exception e) {
             e.printStackTrace();
         }

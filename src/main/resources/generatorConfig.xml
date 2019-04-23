@@ -65,16 +65,16 @@
         <!--<table tableName="bed"-->
             <!--domainObjectName="Bed" >-->
         <!--</table>-->
-        <table tableName="care_plan"
-            domainObjectName="CarePlan" >
-            <columnOverride column="care_plan" javaType="java.lang.String" jdbcType="VARCHAR" />
-            <columnOverride column="remarks" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <!--<table tableName="care_plan"-->
+            <!--domainObjectName="CarePlan" >-->
+            <!--<columnOverride column="care_plan" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+            <!--<columnOverride column="remarks" javaType="java.lang.String" jdbcType="VARCHAR" />-->
 
-        </table>
-        <table tableName="care_record"
-            domainObjectName="CareRecord" >
-            <columnOverride column="care_info" javaType="java.lang.String" jdbcType="VARCHAR" />
-        </table>
+        <!--</table>-->
+        <!--<table tableName="care_record"-->
+            <!--domainObjectName="CareRecord" >-->
+            <!--<columnOverride column="care_info" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+        <!--</table>-->
         <!--<table tableName="health"-->
             <!--domainObjectName="Health" >-->
             <!--<columnOverride column="remarks" javaType="java.lang.String" jdbcType="VARCHAR" />-->
@@ -94,6 +94,14 @@
         <!--<table tableName="staff"-->
             <!--domainObjectName="Staff" >-->
         <!--</table>-->
-
+        <!--<table tableName="log_history"-->
+            <!--domainObjectName="LogHistory" >-->
+        <!--</table>-->
+        <table tableName="menu"
+            domainObjectName="Menu" >
+        </table>
+        <table tableName="position_menu"
+            domainObjectName="PositionMenu" >
+        </table>
     </context>
 </generatorConfiguration>

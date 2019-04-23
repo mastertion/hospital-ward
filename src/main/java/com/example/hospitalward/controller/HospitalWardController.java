@@ -1,5 +1,8 @@
 package com.example.hospitalward.controller;
 
+import com.example.hospitalward.model.LogHistory;
+import com.example.hospitalward.util.LogHistoryUtils;
+import com.example.hospitalward.util.ServerResult;
 import com.example.hospitalward.util.SnowflakeIdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -67,6 +70,10 @@ public class HospitalWardController {
     public String checkIn() {
         return  "checkInList";
     }
+    @GetMapping("/menu")
+    public String menu() {
+        return  "menuList";
+    }
     @RequestMapping("/upload")
     @ResponseBody
     public Map uploadFile(@RequestParam("smfile") MultipartFile smfile)throws Exception{
@@ -79,10 +86,7 @@ public class HospitalWardController {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Map> responseEntity = null;
-
-             responseEntity = restTemplate.postForEntity(url, requestEntity, Map.class);
-
-
+        responseEntity = restTemplate.postForEntity(url, requestEntity, Map.class);
         return responseEntity.getBody();
 
 

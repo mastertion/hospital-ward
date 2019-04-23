@@ -7,6 +7,7 @@ import com.example.hospitalward.model.Bed;
 import com.example.hospitalward.model.Room;
 import com.example.hospitalward.model.RoomExample;
 import com.example.hospitalward.service.RoomService;
+import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
 import com.github.pagehelper.PageHelper;
@@ -74,6 +75,7 @@ public class RoomServiceImpl implements RoomService {
                 bedCustomMapper.insertSelective(bed);
             }
             roomMapper.insertSelective(room);
+            LogHistoryUtils.log(room.getId().toString(), "创建房间信息及床位", room);
             return true;
         }
         return false;

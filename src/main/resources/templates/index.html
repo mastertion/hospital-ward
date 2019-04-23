@@ -15,7 +15,8 @@
     <meta http-equiv="refresh" content="0;ie.html" />
     <![endif]-->
 
-    <link rel="shortcut icon" href="favicon.ico"> <link href="/asset/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/asset/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
     <link href="/asset/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <link href="/asset/css/animate.css" rel="stylesheet">
     <link href="/asset/css/style.css?v=4.1.0" rel="stylesheet">
@@ -51,78 +52,73 @@
                         <div class="logo-element">MAN
                         </div>
                     </li>
-                    <li>
-                        <a href="#">
+
+                    <li  v-if="menu" v-for="item in menu">
+                        <a :href="item.path">
                             <i class="fa fa fa-bar-chart-o"></i>
-                            <span class="nav-label">接待</span>
+                            <span class="nav-label" v-text="item.name"></span>
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a class="J_menuItem" href="bed">床位管理</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="reservation">预定管理</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="checkIn">入住管理</a>
+                            <li v-if="item.children" v-for="i in item.children">
+                                <a class="J_menuItem" :href="i.path">{{i.name}}</a>
                             </li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa fa-bar-chart-o"></i>
-                            <span class="nav-label">护理</span>
-                            <span class="fa arrow"></span>
-                        </a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a class="J_menuItem" href="careRecord">护理信息</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="carePlan">护理计划</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa fa-bar-chart-o"></i>
-                            <span class="nav-label">员工管理</span>
-                            <span class="fa arrow"></span>
-                        </a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a class="J_menuItem" href="staff">员工信息</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa fa-bar-chart-o"></i>
-                            <span class="nav-label">用户管理</span>
-                            <span class="fa arrow"></span>
-                        </a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a class="J_menuItem" href="patient">用户基本信息</a>
-                            </li>
-                            <li>
-                                <a class="J_menuItem" href="account">用户账户</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa fa-bar-chart-o"></i>
-                            <span class="nav-label">药品管理</span>
-                            <span class="fa arrow"></span>
-                        </a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a class="J_menuItem" href="medicinal">药品管理</a>
-                            </li>
-                        </ul>
-                    </li>
+                    <!--<li>-->
+                        <!--<a href="#">-->
+                            <!--<i class="fa fa fa-bar-chart-o"></i>-->
+                            <!--<span class="nav-label">护理</span>-->
+                            <!--<span class="fa arrow"></span>-->
+                        <!--</a>-->
+                        <!--<ul class="nav nav-second-level">-->
+                            <!--<li>-->
+                                <!--<a class="J_menuItem" href="careRecord">护理信息</a>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<a class="J_menuItem" href="carePlan">护理计划</a>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<a href="#">-->
+                            <!--<i class="fa fa fa-bar-chart-o"></i>-->
+                            <!--<span class="nav-label">员工管理</span>-->
+                            <!--<span class="fa arrow"></span>-->
+                        <!--</a>-->
+                        <!--<ul class="nav nav-second-level">-->
+                            <!--<li>-->
+                                <!--<a class="J_menuItem" href="staff">员工信息</a>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<a href="#">-->
+                            <!--<i class="fa fa fa-bar-chart-o"></i>-->
+                            <!--<span class="nav-label">用户管理</span>-->
+                            <!--<span class="fa arrow"></span>-->
+                        <!--</a>-->
+                        <!--<ul class="nav nav-second-level">-->
+                            <!--<li>-->
+                                <!--<a class="J_menuItem" href="patient">用户基本信息</a>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                                <!--<a class="J_menuItem" href="account">用户账户</a>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<a href="#">-->
+                            <!--<i class="fa fa fa-bar-chart-o"></i>-->
+                            <!--<span class="nav-label">药品管理</span>-->
+                            <!--<span class="fa arrow"></span>-->
+                        <!--</a>-->
+                        <!--<ul class="nav nav-second-level">-->
+                            <!--<li>-->
+                                <!--<a class="J_menuItem" href="medicinal">药品管理</a>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
                 </ul>
             </div>
         </nav>
@@ -180,7 +176,7 @@
                     <div id="tab-1" class="tab-pane active">
                         <div class="sidebar-title">
                             <h3> <i class="fa fa-comments-o"></i> 主题设置</h3>
-                            <small><i class="fa fa-tim"></i> 你可以从这里选择和预览主题的布局和样式，这些设置会被保存在本地，下次打开的时候会直接应用这些设置。</small>
+                            <small><i class="fa fa-tim"></i> {{menu}}</small>
                         </div>
                         <div class="skin-setttings">
                             <div class="title">主题设置</div>
@@ -486,7 +482,97 @@
 
     <!-- 第三方插件 -->
     <script src="/asset/js/plugins/pace/pace.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
+    <script>
 
+        var index = new Vue({
+            el: "#wrapper",
+            data: function () {
+                return {
+                    menu: [
+                        {
+                            name: '接待',
+                            path: '#',
+                            children:[
+                                {
+                                    name: '床位管理',
+                                    path: 'bed'
+                                },
+                                {
+                                    name: '预定管理',
+                                    path: 'reservation'
+                                },
+                                {
+                                    name: '入住管理',
+                                    path: 'checkIn'
+                                }
+                            ]
+                        },
+                        {
+                            name: '护理',
+                            path: '#',
+                            children:[
+                                {
+                                    name: '护理信息',
+                                    path: 'careRecord'
+                                },
+                                {
+                                    name: '护理计划',
+                                    path: 'carePlan'
+                                }
+                            ]
+                        },
+                        {
+                            name: '员工管理',
+                            path: '#',
+                            children:[
+                                {
+                                    name: '员工信息',
+                                    path: 'staff'
+                                }
+                            ]
+                        },
+                        {
+                            name: '用户管理',
+                            path: '#',
+                            children:[
+                                {
+                                    name: '用户基本信息',
+                                    path: 'patient'
+                                },
+                                {
+                                    name: '用户账户',
+                                    path: 'account'
+                                }
+                            ]
+                        },
+                        {
+                            name: '药品管理',
+                            path: '#',
+                            children:[
+                                {
+                                    name: '药品管理',
+                                    path: 'medicinal'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            methods: {
+
+            },
+            created: function () {
+             this.menu = JSON.parse(localStorage.getItem("menu"));//获取名称为“key”的值
+
+            },
+            mounted: function () {
+            }
+
+        })
+    </script>
 </body>
 
 </html>

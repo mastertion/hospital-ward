@@ -7,12 +7,14 @@ import com.example.hospitalward.model.Bed;
 import com.example.hospitalward.model.Patient;
 import com.example.hospitalward.model.PatientExample;
 import com.example.hospitalward.service.PatientService;
+import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.vo.PatientVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -66,6 +68,7 @@ public class PatientServiceImpl implements PatientService {
         patient.setUpdateDate(new Date());
         patient.setCreateStaff(1l);
         int result = patientCustomMapper.insertSelective(patient);
+        LogHistoryUtils.log(patient.getId().toString(), "创建用户基本信息" + patient.getBedId(), patient);
         return result;
     }
 
@@ -74,6 +77,7 @@ public class PatientServiceImpl implements PatientService {
         patient.setUpdateDate(new Date());
         patient.setCreateStaff(1l);
         int result = patientCustomMapper.updateByPrimaryKeySelective(patient);
+        LogHistoryUtils.log(patient.getId().toString(), "修改基本信息" + patient.getBedId(), patient);
         return result;
     }
 
@@ -138,6 +142,7 @@ public class PatientServiceImpl implements PatientService {
            bed.setStatus(false);
            bed.setUpdateDate(new Date());
            int i = bedCustomMapper.updateByPrimaryKeySelective(bed);
+           LogHistoryUtils.log(patientVO.getId().toString(), "预订房间入住" + patientVO.getBedId(), patientVO);
            return true;
        }
         return false;
@@ -156,6 +161,7 @@ public class PatientServiceImpl implements PatientService {
             patient.setUpdateDate(new Date());
             patient.setBedId(null);
             int i1 = patientCustomMapper.updateByPrimaryKey(patient);
+            LogHistoryUtils.log(patient.getId().toString(), "取消预订房间" + patient.getBedId(), patient);
             return true;
         }
         return false;
@@ -172,5 +178,53 @@ public class PatientServiceImpl implements PatientService {
         List<Patient> patients = patientCustomMapper.selectListNotCheckInAndReserve(patient);
 
         return patients;
+    }
+
+    @Transactional
+    @Override
+    public Boolean patientReserve(Patient patient) throws Exception {
+        if (patient != null && patient.getId() != null &&  patient.getBedId() != null) {
+            Bed bed = bedCustomMapper.selectByPrimaryKey(patient.getBedId());
+            Patient patientUpdate = patientCustomMapper.selectByPrimaryKey(patient.getId());
+            if ( bed != null && !bed.getIsNull() && !bed.getStatus() && patientUpdate.getBedId() == null) {
+                bed.setUpdateDate(new Date());
+                bed.setIsNull(false);
+                bed.setStatus(true);
+                int i = bedCustomMapper.updateByPrimaryKeySelective(bed);
+                patientUpdate.setBedId(patient.getBedId());
+                patientUpdate.setUpdateDate(new Date());
+                int result = patientCustomMapper.updateByPrimaryKeySelective(patientUpdate);
+                bed.setId(patient.getBedId());
+                LogHistoryUtils.log(patient.getId().toString(), "预定房间" + patient.getBedId(), patient);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Transactional
+    @Override
+    public Boolean patientCheckIn(Patient patient) throws Exception {
+        if (patient != null && patient.getId() != null &&  patient.getBedId() != null) {
+            Bed bed = bedCustomMapper.selectByPrimaryKey(patient.getBedId());
+            Patient patientUpdate = patientCustomMapper.selectByPrimaryKey(patient.getId());
+            if ( bed != null && !bed.getIsNull() && !bed.getStatus() && patientUpdate.getBedId() == null) {
+                bed.setUpdateDate(new Date());
+                bed.setIsNull(true);
+                bed.setStatus(false);
+                int i = bedCustomMapper.updateByPrimaryKeySelective(bed);
+                patientUpdate.setBedId(patient.getBedId());
+                patientUpdate.setUpdateDate(new Date());
+                int result = patientCustomMapper.updateByPrimaryKeySelective(patientUpdate);
+                bed.setId(patient.getBedId());
+                LogHistoryUtils.log(patient.getId().toString(), "入住房间" + patient.getBedId(), patient);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 }

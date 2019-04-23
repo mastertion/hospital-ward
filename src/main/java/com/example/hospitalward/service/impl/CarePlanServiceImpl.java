@@ -8,6 +8,7 @@ import com.example.hospitalward.model.CarePlan;
 import com.example.hospitalward.model.CarePlanExample;
 import com.example.hospitalward.model.Medicinal;
 import com.example.hospitalward.service.CarePlanService;
+import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.ServerResult;
 import com.example.hospitalward.vo.AccountVO;
@@ -68,8 +69,10 @@ public class CarePlanServiceImpl implements CarePlanService {
                             account.setUpdateDate(new Date());
                             medicinalCustomMapper.updateByPrimaryKeySelective(medicinal);
                             accountCustomerMapper.updateByPrimaryKeySelective(account);
+                            LogHistoryUtils.log(account.getPatientId().toString(), "药品消费" + medicinal.getName() + ": ￥" +  medicinal.getPrice() * carePlan.getMedicinalNum(), carePlan);
                             carePlan.setUpdateDate(new Date());
                             carePlanMapper.updateByPrimaryKeySelective(carePlan);
+                            LogHistoryUtils.log(carePlan.getCareId().toString(), "执行计划" + carePlan.getId(), carePlan);
                             return ServerResult.ok();
                         } else {
                             return  ServerResult.error(304,"用户账户余额不足");

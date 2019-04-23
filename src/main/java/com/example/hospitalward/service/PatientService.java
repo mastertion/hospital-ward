@@ -29,4 +29,8 @@ public interface PatientService {
     Boolean cancelReserve(PatientVO patientVO) throws Exception;
 
     List selectListNotCheckInAndReserve(Patient patient) throws Exception;
+
+    Boolean patientReserve(Patient patient) throws Exception;
+
+    Boolean patientCheckIn(Patient patient) throws Exception;
 }

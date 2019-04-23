@@ -369,7 +369,7 @@
             editPatientDialog(data) {
                 vm.title = '编辑'
                 vm.dialogVisible = true
-                vm.form = data.row
+                vm.form = Object.assign({},  data.row)
             },
             addPatientDialog() {
                 vm.dialogVisible = true

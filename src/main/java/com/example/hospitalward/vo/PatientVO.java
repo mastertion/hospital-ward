@@ -2,9 +2,11 @@ package com.example.hospitalward.vo;
 
 import com.example.hospitalward.model.Patient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper=false)
 @Data
 public class PatientVO extends Patient {
     private String  staffName;

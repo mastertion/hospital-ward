@@ -4,6 +4,7 @@ import com.example.hospitalward.mapper.auto.StaffMapper;
 import com.example.hospitalward.model.Staff;
 import com.example.hospitalward.model.StaffExample;
 import com.example.hospitalward.service.StaffService;
+import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
 import com.github.pagehelper.PageHelper;
@@ -55,6 +56,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setUserName(staff.getName() + '(' + staff.getCardId() + ')');
         staff.setCreateStaff(1L);
         int i = staffMapper.updateByPrimaryKeySelective(staff);
+        LogHistoryUtils.log(staff.getId().toString(), "修改员工信息", staff);
 
         return staff;
     }
@@ -70,6 +72,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setOntheJob(true);
         staff.setCreateStaff(1L);
         int i = staffMapper.insertSelective(staff);
+        LogHistoryUtils.log(staff.getId().toString(), "创建员工信息", staff);
         return staff;
     }
 }

@@ -6,6 +6,7 @@ import com.example.hospitalward.model.CarePlan;
 import com.example.hospitalward.model.CarePlanExample;
 import com.example.hospitalward.model.CareRecord;
 import com.example.hospitalward.service.CareRecordService;
+import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
 import com.example.hospitalward.vo.CareRecordVO;
@@ -72,6 +73,7 @@ public class CareRecordServiceImpl implements CareRecordService {
         careRecord.setUpdateDate(new Date());
         careRecord.setCreateStaff(1L);
         int result = careRecordCustomMapper.insertSelective(careRecord);
+        LogHistoryUtils.log(careRecord.getId().toString() , "制定计划", careRecordVO);
         return result;
     }
 
@@ -112,6 +114,7 @@ public class CareRecordServiceImpl implements CareRecordService {
         careRecord.setUpdateDate(new Date());
         careRecord.setCreateStaff(1L);
         int result = careRecordCustomMapper.updateByPrimaryKeySelective(careRecord);
+        LogHistoryUtils.log(careRecord.getId().toString() , "更新计划", careRecordVO);
         return result;
     }
 

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.hospitalward.mapper.custom.MenuCustomMapper">
+    <select id="getMenuTree" resultMap="BaseResultTree">
+        SELECT
+            mp.*,
+            mc.id c_id,
+            mc.NAME c_name,
+            mc.path c_path,
+            mc.parent_id c_parent_id,
+            mc.is_enable c_is_enable,
+            mc.is_deleted c_is_deleted,
+            mc.create_date c_create_date,
+            mc.update_date c_update_date
+            FROM
+            (
+            SELECT
+            m.*
+            FROM
+            menu m,
+            ( SELECT DISTINCT pm.menu_id FROM position_menu pm
+            <where>
+
+                <if test="position != null">
+                    AND pm.position = #{position,jdbcType=INTEGER}
+
+                </if>
+            </where>) mpm
+            <where>
+                m.id = mpm.menu_id
+                AND m.is_enable = TRUE
+                AND m.is_deleted = FALSE
+            </where>
+            ) mp
+            LEFT JOIN (
+            SELECT
+            m.*
+            FROM
+            menu m,
+            ( SELECT DISTINCT pm.menu_id FROM position_menu pm
+            <where>
+
+                <if test="position != null">
+                    AND pm.position = #{position,jdbcType=INTEGER}
+
+                </if>
+            </where> ) mpm
+            <where>
+                m.id = mpm.menu_id
+                AND m.is_enable = TRUE
+                AND m.is_deleted = FALSE
+            </where>
+            ) mc ON mp.id = mc.parent_id
+            <where>
+                ISNULL( mp.parent_id )
+
+            </where>
+        </select>
+        <select id="getAllMenuTree" resultMap="BaseResultTree">
+            SELECT
+                m.*,
+                m2.id c_id,
+                m2.NAME c_name,
+                m2.path c_path,
+                m2.parent_id c_parent_id,
+                m2.is_enable c_is_enable,
+                m2.is_deleted c_is_deleted,
+                m2.create_date c_create_date,
+                m2.update_date c_update_date
+            FROM
+                menu m
+                LEFT JOIN menu m2 ON m.id = m2.parent_id
+            <where>
+                ISNULL( m.parent_id )
+                AND m.is_enable = TRUE
+                AND m.is_deleted = FALSE
+                AND m2.is_enable = TRUE
+                AND m2.is_deleted = FALSE
+            </where>
+    </select>
+    <resultMap id="BaseResultTree" type="com.example.hospitalward.vo.MenuTree">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="is_enable" jdbcType="BIT" property="isEnable" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <collection property="children" ofType="com.example.hospitalward.model.Menu">
+      <id column="c_id" jdbcType="BIGINT" property="id" />
+      <result column="c_name" jdbcType="VARCHAR" property="name" />
+      <result column="c_path" jdbcType="VARCHAR" property="path" />
+      <result column="c_parent_id" jdbcType="BIGINT" property="parentId" />
+      <result column="c_is_enable" jdbcType="BIT" property="isEnable" />
+      <result column="c_is_deleted" jdbcType="BIT" property="isDeleted" />
+      <result column="c_create_date" jdbcType="TIMESTAMP" property="createDate" />
+      <result column="c_update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    </collection>
+  </resultMap>
+</mapper>
