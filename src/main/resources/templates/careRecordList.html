@@ -28,7 +28,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="">
-                        <a @click="addCareRecordDialog();" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                        <a @click="addCareRecordDialog();" href="javascript:void(0);" class="btn btn-primary ">新增</a>
                     </div>
                     <el-table
                             :data="careRecordList"
@@ -69,6 +69,7 @@
                                 >编辑
                                 </el-button>
                                 <el-button
+                                        @click="delCareRecord(scope.row)"
                                         size="mini"
                                         type="danger"
                                 >删除
@@ -252,6 +253,38 @@
             }
         },
         methods: {
+            delCareRecord (row) {
+                this.$confirm('是否删除此任务?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    $.ajax({
+                        url: "/product/careRecord?id=" + row.id,
+                        type: "delete",//请求方式
+                        dataType: "json",//返回类型
+                        success: function (response) {
+                            if (response.code === 200 && response.data ) {
+                                vm.find()
+                                vm.$message({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                            } else {
+                                vm.$message({
+                                    type: 'info',
+                                    message: '删除失败!'
+                                });
+                            }
+                        },
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消'
+                    });
+                });
+            },
             handleDelete(index, row) {
                 vm.form.carePlanList.splice(index,1)
             },

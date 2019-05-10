@@ -41,31 +41,35 @@
   </select>
 
   <select id="selecByPatientId" resultMap="BaseResultMap">
-    select
-      a.id,
-      IFNULL( a.deposit, 0 ),
-      a.payer,
-      a.pay_date,
-      IFNULL( a.daily_consumption, 0 ),
-      IFNULL( a.medicines_consumption, NULL ),
-      a.payment,
-      a.complement,
-      a.complement_date,
-      a.patient_id,
-      a.is_deleted,
-      a.create_date,
-      a.update_date,
-      a.create_staff,
-      s.NAME staff_name,
-      p.card_id,
-      p.NAME patient_name
-    from
-      account a, patient p, staff s
-    <where>
-      a.patient_id = p.id and a.patient_id =  #{patientId,jdbcType=BIGINT}  and   a.is_deleted = false and
-      p.is_deleted = false  and a.create_staff = s.id
-      and isNull( a.id )
+    SELECT
+    a.id,
+    IFNULL( a.deposit, 0 ) deposit,
+    a.payer,
+    a.pay_date,
+    IFNULL( a.daily_consumption, 0 ) daily_consumption,
+    IFNULL( a.medicines_consumption, 0 ) medicines_consumption,
+    a.payment,
+    a.complement,
+    a.complement_date,
+    a.patient_id,
+    a.is_deleted,
+    a.create_date,
+    a.update_date,
+    a.create_staff,
+    s.NAME staff_name,
+    p.card_id,
+    p.NAME patient_name
+    FROM
+    account a
+    LEFT JOIN patient p ON a.patient_id = p.id
+    LEFT JOIN staff s ON a.create_staff = s.id
 
+    <where>
+
+      a.patient_id =  #{patientId,jdbcType=BIGINT}
+      AND a.is_deleted = FALSE
+      AND p.is_deleted = FALSE
     </where>
+
   </select>
 </mapper>

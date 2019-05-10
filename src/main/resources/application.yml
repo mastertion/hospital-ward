@@ -1,21 +1,61 @@
+
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  thymeleaf:
+    cache: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  jpa:
+    show-sql: true
+
   datasource:
     url: jdbc:mysql://47.100.115.59:3306/HospitalWard?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: master-lee
     password: 286916
     driver-class-name: com.mysql.jdbc.Driver
-  jpa:
-    show-sql: true
-  jackson:
-    default-property-inclusion: non-null
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    serialization:
-      write-dates-as-timestamps: false
+    druid:
+      url: jdbc:mysql://127.0.0.1:3306/ocdb?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+      username: root
+      password: 123456
+
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: true
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: 123123
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+mybatis:
+  mapper-locations: classpath*:**/*Mapper.xml
+server:
+  port: 8080
+
 logging:
   level:
     #设置mybatis的sql语句打印到控制台。
     com.example.hospitalward.mapper: trace
-
-mybatis:
-  mapper-locations: classpath*:**/*Mapper.xml

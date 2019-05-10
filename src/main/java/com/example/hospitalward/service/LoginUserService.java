@@ -11,4 +11,5 @@ public interface LoginUserService {
 
   StaffVO findByCardId(String cardId);
 
+  Boolean verify() throws  Exception;
 }

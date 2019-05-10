@@ -18,8 +18,8 @@
     <link href="/asset/css/reset.css" rel="stylesheet">
 </head>
 
-<body class="gray-bg">
-<div class="wrapper wrapper-content animated fadeInRight page-content" id="content">
+<body class="gray-bg" >
+<div class="wrapper wrapper-content animated fadeInRight page-content" style="background:url('https://i.bmp.ovh/imgs/2019/05/41330cc92d03a326.jpg')" id="content">
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
@@ -29,7 +29,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="">
-                        <a @click="addPatientDialog();" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                        <a @click="addPatientDialog();" href="javascript:void(0);" class="btn btn-primary ">新增</a>
                     </div>
                     <el-table
                             :data="patientList"
@@ -37,12 +37,12 @@
                             style="width: 100%">
                         <el-table-column
                                 prop="id"
-                                label="用户编号"
+                                label="患者编号"
                                 width="120">
                         </el-table-column>
                         <el-table-column
                                 prop="name"
-                                label="用户姓名">
+                                label="患者姓名">
                         </el-table-column>
                         <el-table-column
                                 prop="sex"
@@ -234,7 +234,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
-                        <el-form-item label="与老人关系：">
+                        <el-form-item label="与患者关系：">
                             <el-input v-model="form.relation"></el-input>
                         </el-form-item>
                     </el-col>
@@ -337,6 +337,9 @@
                 }, {
                     value: '高中',
                     label: '高中'
+                }, {
+                    value: '专科',
+                    label: '专科'
                 }, {
                     value: '本科',
                     label: '本科'

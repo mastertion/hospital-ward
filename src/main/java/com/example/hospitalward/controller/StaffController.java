@@ -7,6 +7,7 @@ import com.example.hospitalward.util.ServerResult;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -44,6 +45,18 @@ public class StaffController {
     public ServerResult create(Staff staff) {
         try {
             staff = staffService.create(staff);
+            return  ServerResult.ok().put("data",staff);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  ServerResult.error();
+    }
+    @PutMapping("/staff-password")
+    @ResponseBody
+    public ServerResult editPassword(Staff staff) {
+        try {
+            staff.setPassword(DigestUtils.md5DigestAsHex((staff.getCardId() + "123456").getBytes()));
+            staff = staffService.edit(staff);
             return  ServerResult.ok().put("data",staff);
         } catch (Exception e) {
             e.printStackTrace();

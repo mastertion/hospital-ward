@@ -6,10 +6,12 @@ import com.example.hospitalward.model.CarePlan;
 import com.example.hospitalward.model.CarePlanExample;
 import com.example.hospitalward.model.CareRecord;
 import com.example.hospitalward.service.CareRecordService;
+import com.example.hospitalward.util.JwtUtils;
 import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
 import com.example.hospitalward.vo.CareRecordVO;
+import com.example.hospitalward.vo.StaffVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -48,6 +50,8 @@ public class CareRecordServiceImpl implements CareRecordService {
     @Override
     @Transactional
     public Integer create(CareRecordVO careRecordVO) throws Exception {
+        StaffVO userInfo = JwtUtils.getUserInfo();
+
         CareRecord careRecord = new CareRecord();
         BeanUtils.copyProperties(careRecordVO, careRecord);
         careRecord.setId(SnowflakeIdWorker.getUUID());
@@ -62,7 +66,7 @@ public class CareRecordServiceImpl implements CareRecordService {
                     carePlan.setIsDeleted(false);
                     carePlan.setCreateDate(new Date());
                     carePlan.setUpdateDate(new Date());
-                    carePlan.setCreateStaff(1L);
+                    carePlan.setCreateStaff(userInfo.getId());
                     carePlanMapper.insertSelective(carePlan);
                 }
             }
@@ -71,7 +75,7 @@ public class CareRecordServiceImpl implements CareRecordService {
         careRecord.setIsDeleted(false);
         careRecord.setCreateDate(new Date());
         careRecord.setUpdateDate(new Date());
-        careRecord.setCreateStaff(1L);
+        careRecord.setCreateStaff(userInfo.getId());
         int result = careRecordCustomMapper.insertSelective(careRecord);
         LogHistoryUtils.log(careRecord.getId().toString() , "制定计划", careRecordVO);
         return result;
@@ -80,6 +84,7 @@ public class CareRecordServiceImpl implements CareRecordService {
     @Override
     @Transactional
     public Integer edit(CareRecordVO careRecordVO) throws Exception {
+        StaffVO userInfo = JwtUtils.getUserInfo();
         CarePlan delCarePlan = new CarePlan();
         delCarePlan.setIsDeleted(true);
         CarePlanExample example = new CarePlanExample();
@@ -94,7 +99,7 @@ public class CareRecordServiceImpl implements CareRecordService {
                     carePlan.setIsComplete(false);
                     carePlan.setIsDeleted(false);
                     carePlan.setUpdateDate(new Date());
-                    carePlan.setCreateStaff(1L);
+                    carePlan.setCreateStaff(userInfo.getId());
                     carePlanMapper.updateByPrimaryKeySelective(carePlan);
                 } else {
                     carePlan.setId(SnowflakeIdWorker.getUUID());
@@ -104,7 +109,7 @@ public class CareRecordServiceImpl implements CareRecordService {
                     carePlan.setIsDeleted(false);
                     carePlan.setCreateDate(new Date());
                     carePlan.setUpdateDate(new Date());
-                    carePlan.setCreateStaff(1L);
+                    carePlan.setCreateStaff(userInfo.getId());
                     carePlanMapper.insertSelective(carePlan);
                 }
             }
@@ -112,7 +117,7 @@ public class CareRecordServiceImpl implements CareRecordService {
         careRecord.setIsComplete(false);
         careRecord.setIsDeleted(false);
         careRecord.setUpdateDate(new Date());
-        careRecord.setCreateStaff(1L);
+        careRecord.setCreateStaff(userInfo.getId());
         int result = careRecordCustomMapper.updateByPrimaryKeySelective(careRecord);
         LogHistoryUtils.log(careRecord.getId().toString() , "更新计划", careRecordVO);
         return result;
@@ -123,5 +128,13 @@ public class CareRecordServiceImpl implements CareRecordService {
         careRecord.setUpdateDate(new Date());
         int result = careRecordCustomMapper.updateByPrimaryKeySelective(careRecord);
         return result;
+    }
+
+    @Override
+    public Boolean delete(CareRecord careRecord) throws Exception {
+        careRecord.setUpdateDate(new Date());
+        careRecord.setIsDeleted(true);
+        int result = careRecordCustomMapper.updateByPrimaryKeySelective(careRecord);
+        return  1 == result ? true : false;
     }
 }

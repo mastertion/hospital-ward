@@ -78,16 +78,19 @@ public class HospitalWardController {
     public String position() {
         return  "positionList";
     }
-
+    @GetMapping("/home")
+    public String home() {
+        return  "home";
+    }
     @RequestMapping("/upload")
     @ResponseBody
-    public Map uploadFile(@RequestParam("smfile") MultipartFile smfile)throws Exception{
+    public Map uploadFile(@RequestParam("file") MultipartFile file)throws Exception{
         HttpHeaders headers = new HttpHeaders();
         String url = "https://api.yum6.cn/sinaimg.php/sinaimg.php";
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
         bodyMap.add("type", "multipart");
-        bodyMap.add("file", new FileSystemResource(convert(smfile)));
+        bodyMap.add("file", new FileSystemResource(convert(file)));
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Map> responseEntity = null;

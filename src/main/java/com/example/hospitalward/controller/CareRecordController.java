@@ -65,4 +65,17 @@ public class CareRecordController {
         return  ServerResult.error();
 
     }
+
+    @DeleteMapping("/careRecord")
+    @ResponseBody
+    public ServerResult delete( CareRecord careRecord ) {
+        try {
+            Boolean result = careRecordService.delete(careRecord);
+            return  ServerResult.ok().put("data",result );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  ServerResult.error();
+
+    }
 }

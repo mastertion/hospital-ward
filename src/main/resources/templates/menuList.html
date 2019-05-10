@@ -30,7 +30,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="">
-                        <a @click="addStaffDialog" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                        <a @click="addStaffDialog" href="javascript:void(0);" class="btn btn-primary ">新增</a>
                     </div>
                     <el-table
                             :data="menu"
@@ -198,11 +198,8 @@
             return {
                 title: '添加路径',
                 dialogVisible: false,
-                form: {
-
-                },
-                menu: [
-                ],
+                form: {},
+                menu: [],
                 options: [{
                     value: 1,
                     label: '根菜单'
@@ -214,15 +211,14 @@
         },
         methods: {
             delMenu (row) {
-                this.$confirm('此用户是否取消预订, 是否继续?', '提示', {
+                this.$confirm('是否删除此菜单?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
                     $.ajax({
-                        url: "/menu",
+                        url: "/menu?id=" + row.id,
                         type: "delete",//请求方式
-                        data: row,//请求数据
                         dataType: "json",//返回类型
                         success: function (response) {
                             if (response.code === 200 && response.data ) {

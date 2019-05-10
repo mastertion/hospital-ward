@@ -50,4 +50,15 @@ public class MedicinalController {
         }
         return  ServerResult.error();
     }
+    @DeleteMapping("/medicinal")
+    @ResponseBody
+    public ServerResult delete(Medicinal medicinal) {
+        try {
+            Boolean result = medicinalService.delete(medicinal);
+            return  ServerResult.ok().put("data",result );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  ServerResult.error();
+    }
 }

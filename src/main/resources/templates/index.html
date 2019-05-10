@@ -6,10 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
 
-    <title>H+ 后台主题UI框架 - 主页</title>
-
-    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
-    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+    <title>主页</title>
 
     <!--[if lt IE 9]>
     <meta http-equiv="refresh" content="0;ie.html" />
@@ -40,8 +37,6 @@
                                 </span>
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a class="J_menuItem" href="form_avatar.html">修改头像</a>
-                                </li>
                                 <li><a class="J_menuItem" href="profile.html">个人资料</a>
                                 </li>
                                 <li class="divider"></li>
@@ -165,7 +160,7 @@
                 <a href="#"  @click="logout" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
             </div>
             <div class="row J_mainContent" id="content-main">
-                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="index" frameborder="0" data-id="home" seamless></iframe>
+                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="/home" frameborder="0" data-id="home" seamless></iframe>
             </div>
         </div>
         <!--右侧部分结束-->
@@ -262,6 +257,8 @@
     <script src="/asset/js/hplus.js?v=4.1.0"></script>
     <script type="text/javascript" src="/asset/js/contabs.js"></script>
 
+    <script src="/asset/js/hw.js"></script>
+
     <!-- 第三方插件 -->
     <script src="/asset/js/plugins/pace/pace.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
@@ -283,9 +280,23 @@
                     localStorage.removeItem('menu')
                     localStorage.removeItem('token')
                     window.location.href ="/login"
+                },
+                verify () {
+                    $.ajax({
+                        url : "/verify",
+                        type : "get",//请求方式
+                        dataType : "json",//返回类型
+                        success : function(response) {
+                            if (response.code === 200) {
+                            } else{
+                                window.location.href = 'http://localhost:8080/login'
+                            }
+                        },
+                    })
                 }
             },
             created: function () {
+                this.verify()
                 this.menu = JSON.parse(localStorage.getItem("menu"));//获取名称为“key”的值
                 this.userInfo = JSON.parse(localStorage.getItem("userInfo"));//获取名称为“key”的值
 

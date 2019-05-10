@@ -58,7 +58,7 @@ public class AuthRealm extends AuthorizingRealm {
 //      throw new AuthenticationException("User didn't existed!");
 //    }
 
-    if (!JwtUtils.verify(cardId, byCardId.getPassword(), token)) {
+    if (!JwtUtils.verify()) {
       throw new UnknownAccountException("Username or password error");
     }
 

@@ -52,4 +52,15 @@ public class MedicinalServiceImpl implements MedicinalService {
         LogHistoryUtils.log(medicinal.getId().toString(), "补充药品" + medicinal.getName(), medicinal);
         return result;
     }
+
+    @Override
+    public Boolean delete(Medicinal medicinal) throws Exception {
+        medicinal = medicinalCustomMapper.selectByPrimaryKey(medicinal.getId());
+        medicinal.setUpdateDate(new Date());
+        medicinal.setIsDeleted(true);
+        int result = medicinalCustomMapper.updateByPrimaryKeySelective(medicinal);
+        LogHistoryUtils.log(medicinal.getId().toString(), "删除药品" + medicinal.getName(), medicinal);
+        if (1 == result)  return true;
+        return false;
+    }
 }

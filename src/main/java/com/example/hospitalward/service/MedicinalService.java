@@ -10,4 +10,6 @@ public interface MedicinalService {
     Integer create(Medicinal medicinal) throws Exception;
 
     Integer edit(Medicinal medicinal) throws Exception;
+
+    Boolean delete(Medicinal medicinal) throws Exception;
 }

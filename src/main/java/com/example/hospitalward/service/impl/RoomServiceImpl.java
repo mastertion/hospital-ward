@@ -7,9 +7,11 @@ import com.example.hospitalward.model.Bed;
 import com.example.hospitalward.model.Room;
 import com.example.hospitalward.model.RoomExample;
 import com.example.hospitalward.service.RoomService;
+import com.example.hospitalward.util.JwtUtils;
 import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
+import com.example.hospitalward.vo.StaffVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +53,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Boolean create(Room room) throws Exception {
+        StaffVO userInfo = JwtUtils.getUserInfo();
         if (room != null && room.getRoomType() != null && (room.getRoomType() == 1 || room.getRoomType() == 2 )) {
             room.setId(SnowflakeIdWorker.getUUID());
             room.setIsDeleted(false);
             room.setCreateDate(new Date());
             room.setUpdateDate(new Date());
-            room.setCreateStaff(1L);
+            room.setCreateStaff(userInfo.getId());
             Bed bed = new Bed();
             bed.setId(SnowflakeIdWorker.getUUID());
             bed.setRoomId(room.getId());
@@ -65,9 +68,9 @@ public class RoomServiceImpl implements RoomService {
             bed.setIsNull(false);
             bed.setIsDeleted(false);
             bed.setCreateDate(new Date());
-            bed.setStaffId(1L);
+            bed.setStaffId(userInfo.getId());
             bed.setUpdateDate(new Date());
-            bed.setCreateStaff(1L);
+            bed.setCreateStaff(userInfo.getId());
             bedCustomMapper.insertSelective(bed);
             if (room.getRoomType() == 2) {
                 bed.setId(SnowflakeIdWorker.getUUID());

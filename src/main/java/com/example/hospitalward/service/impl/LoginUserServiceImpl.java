@@ -3,10 +3,10 @@ package com.example.hospitalward.service.impl;
 import com.example.hospitalward.constants.OAuthConstant;
 import com.example.hospitalward.mapper.auto.StaffMapper;
 import com.example.hospitalward.mapper.custom.MenuCustomMapper;
-import com.example.hospitalward.model.Menu;
 import com.example.hospitalward.model.Staff;
 import com.example.hospitalward.model.StaffExample;
 import com.example.hospitalward.service.LoginUserService;
+import com.example.hospitalward.util.JwtUtils;
 import com.example.hospitalward.vo.MenuTree;
 import com.example.hospitalward.vo.StaffVO;
 import org.springframework.beans.BeanUtils;
@@ -53,5 +53,10 @@ public class LoginUserServiceImpl implements LoginUserService {
             return staffVO;
         }
         return null;
+    }
+
+    @Override
+    public Boolean verify() throws Exception {
+        return JwtUtils.verify();
     }
 }

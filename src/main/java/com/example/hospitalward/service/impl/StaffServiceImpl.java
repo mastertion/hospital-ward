@@ -4,9 +4,11 @@ import com.example.hospitalward.mapper.auto.StaffMapper;
 import com.example.hospitalward.model.Staff;
 import com.example.hospitalward.model.StaffExample;
 import com.example.hospitalward.service.StaffService;
+import com.example.hospitalward.util.JwtUtils;
 import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
 import com.example.hospitalward.util.SnowflakeIdWorker;
+import com.example.hospitalward.vo.StaffVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
@@ -52,9 +54,10 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff edit(Staff staff) throws Exception {
+        StaffVO userInfo = JwtUtils.getUserInfo();
         staff.setUpdateDate(new Date());
         staff.setUserName(staff.getName() + '(' + staff.getCardId() + ')');
-        staff.setCreateStaff(1L);
+        staff.setCreateStaff(userInfo.getId());
         int i = staffMapper.updateByPrimaryKeySelective(staff);
         LogHistoryUtils.log(staff.getId().toString(), "修改员工信息", staff);
 
@@ -62,6 +65,7 @@ public class StaffServiceImpl implements StaffService {
     }
     @Override
     public Staff create(Staff staff) throws Exception {
+        StaffVO userInfo = JwtUtils.getUserInfo();
         staff.setId(SnowflakeIdWorker.getUUID());
         staff.setUpdateDate(new Date());
         staff.setPassword(DigestUtils.md5DigestAsHex((staff.getCardId() + "123456").getBytes()));
@@ -70,7 +74,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setIsDeleted(false);
         staff.setJobTime(new Date());
         staff.setOntheJob(true);
-        staff.setCreateStaff(1L);
+        staff.setCreateStaff(userInfo.getId());
         int i = staffMapper.insertSelective(staff);
         LogHistoryUtils.log(staff.getId().toString(), "创建员工信息", staff);
         return staff;

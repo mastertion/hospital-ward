@@ -30,7 +30,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="">
-                        <a @click="addStaffDialog" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                        <a @click="addStaffDialog" href="javascript:void(0);" class="btn btn-primary ">新增</a>
                     </div>
                     <el-table
                             :data="staffList"
@@ -84,7 +84,8 @@
                                 <el-button
                                         size="mini"
                                         type="danger"
-                                >删除
+                                        @click="setPassword(scope.row)"
+                                >重置密码
                                 </el-button>
                             </template>
                         </el-table-column>
@@ -280,7 +281,11 @@
                         ]
                     }
                 ],
-                options: [{
+                options: [
+                {
+                    value: 0,
+                    label: '管理员'
+                },{
                     value: 1,
                     label: '医生'
                 }, {
@@ -293,6 +298,40 @@
             }
         },
         methods: {
+            setPassword (row) {
+                this.$confirm('是否重置密码为123456?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    $.ajax({
+                        url: "/customer/staff-password",
+                        type: 'put',//请求方式
+                        data: row,//请求数据
+                        dataType: "json",//返回类型
+                        success: function (response) {
+                            if (response.code === 200 && response.data ) {
+                                vm.find()
+                                vm.$message({
+                                    type: 'success',
+                                    message: '重置成功!'
+                                });
+                            } else {
+                                vm.$message({
+                                    type: 'info',
+                                    message: '重置失败!'
+                                });
+                            }
+                        },
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消'
+                    });
+                });
+            },
+
             find: function () {
                 $.ajax({
                     url: "/customer/staff",

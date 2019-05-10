@@ -7,9 +7,12 @@ import com.example.hospitalward.model.Bed;
 import com.example.hospitalward.model.Patient;
 import com.example.hospitalward.model.PatientExample;
 import com.example.hospitalward.service.PatientService;
+import com.example.hospitalward.util.JwtUtils;
 import com.example.hospitalward.util.LogHistoryUtils;
 import com.example.hospitalward.util.Page;
+import com.example.hospitalward.util.SnowflakeIdWorker;
 import com.example.hospitalward.vo.PatientVO;
+import com.example.hospitalward.vo.StaffVO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,11 +65,13 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Integer create(Patient patient) throws Exception {
+        StaffVO userInfo = JwtUtils.getUserInfo();
+        patient.setId(SnowflakeIdWorker.getUUID());
         patient.setIsDeleted(false);
         patient.setOnHere(false);
         patient.setCreateDate(new Date());
         patient.setUpdateDate(new Date());
-        patient.setCreateStaff(1l);
+        patient.setCreateStaff(userInfo.getId());
         int result = patientCustomMapper.insertSelective(patient);
         LogHistoryUtils.log(patient.getId().toString(), "创建用户基本信息" + patient.getBedId(), patient);
         return result;
@@ -74,8 +79,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Integer edit(Patient patient) throws Exception {
+        StaffVO userInfo = JwtUtils.getUserInfo();
         patient.setUpdateDate(new Date());
-        patient.setCreateStaff(1l);
+        patient.setCreateStaff(userInfo.getId());
         int result = patientCustomMapper.updateByPrimaryKeySelective(patient);
         LogHistoryUtils.log(patient.getId().toString(), "修改基本信息" + patient.getBedId(), patient);
         return result;

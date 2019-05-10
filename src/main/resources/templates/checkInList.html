@@ -29,7 +29,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="">
-                        <a @click="addPatientDialog();" href="javascript:void(0);" class="btn btn-primary ">添加行</a>
+                        <a @click="addPatientDialog();" href="javascript:void(0);" class="btn btn-primary ">新增</a>
                     </div>
                     <el-table
                             :data="patientList"
@@ -59,6 +59,17 @@
                         <el-table-column
                                 prop="bedNum"
                                 label="床号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="hobby"
+                                label="操作记录">
+                            <template slot-scope="scope">
+                                <el-button
+                                        size="mini"
+                                        type="danger"
+                                >出院
+                                </el-button>
+                            </template>
                         </el-table-column>
                     </el-table>
                     <el-pagination
